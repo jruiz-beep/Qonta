@@ -7,7 +7,7 @@ La documentación está construida con MkDocs y es accesible como un sitio web e
 ## Acceso a la Documentación Publicada
 
 Puedes acceder a la versión más reciente de la documentación aquí:
-[Enlace a tu sitio de MkDocs publicado, por ejemplo: `https://jruiz-beep.github.io/Qonta/`]
+[`https://jruiz-beep.github.io/Qonta/`]
 
 ## Estructura del Proyecto
 
@@ -41,7 +41,3 @@ Si deseas construir y previsualizar la documentación localmente, asegúrate de 
     mkdocs serve
     ```
 4.  Abre tu navegador y ve a `http://127.0.0.1:8000`.
-
-## Licencia
-
-[PROYECTIVE S.A.S]
