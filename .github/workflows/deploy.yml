@@ -3,31 +3,47 @@ name: Deploy MkDocs to GitHub Pages
 on:
   push:
     branches:
-      - main # o la rama donde haces push a tu código fuente de MkDocs (por ejemplo, master)
-  workflow_dispatch: # Permite ejecutar el workflow manualmente desde GitHub Actions
+      - main # La rama que contiene tus archivos fuente (.md, mkdocs.yml)
+  workflow_dispatch: # Permite ejecutar manualmente
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Permiso para escribir en el repositorio (para la rama gh-pages)
-      pages: write # Permiso para desplegar en GitHub Pages
-      id-token: write # Permiso para autenticación de OIDC (requerido para Pages)
+      contents: write
+      pages: write
+      id-token: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Necesario para mkdocs gh-deploy si el historial es importante
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.x # Ajusta a la versión de Python que usas
+          python-version: '3.x' # Usa la última versión de Python 3
 
       - name: Install MkDocs and dependencies
         run: |
-          pip install mkdocs mkdocs-material pymdown-extensions
+          # MkDocs, MkDocs Material, y PyMdown (para Mermaid/fences)
+          pip install mkdocs mkdocs-material pymdown-extensions 
 
-      - name: Deploy MkDocs to GitHub Pages
-        run: mkdocs gh-deploy --force # --force es bueno para asegurar que se suben los cambios
+      - name: Build MkDocs site
+        # Construye el sitio y lo genera en la carpeta 'site/'
+        run: mkdocs build
+
+      # CRÍTICO: Configuración del entorno de despliegue de GitHub Pages
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3 
+
+      - name: Upload artifact (Publicación)
+        # Sube la carpeta 'site' generada como artefacto
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './site' 
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
