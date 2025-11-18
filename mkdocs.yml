@@ -23,7 +23,7 @@ theme:
       primary: custom
       accent: deep purple
       toggle:
-        icon: material/weather-night
+        icon: material/weather-sunny
         name: Cambiar a modo claro
 
     # Paleta para el modo claro
@@ -31,7 +31,7 @@ theme:
       primary: custom
       accent: deep purple
       toggle:
-        icon: material/weather-sunny
+        icon: material/weather-night
         name: Cambiar a modo oscuro
 
 # --- Archivo CSS Personalizado para Colores de Qonta ---
