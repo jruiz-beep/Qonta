@@ -1,0 +1,1308 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica del sistema Qonta, enfocado en el acuse y causación de facturas electrónicas de Colombia.">
+      
+      
+      
+        <link rel="canonical" href="https://jruiz-beep.github.io/Qonta/03_arquitectura/arquitectura_tecnica/">
+      
+      
+        <link rel="prev" href="../../02_modelo_datos/02_detalle_tablas/">
+      
+      
+        <link rel="next" href="../../04_reglas_negocio/hooks/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/FAVICON-QONTA.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>3.1 Arquitectura Técnica - Documentación Técnica Qonta</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3-arquitectura-tecnica-de-qonta" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="Documentación Técnica Qonta" class="md-header__button md-logo" aria-label="Documentación Técnica Qonta" data-md-component="logo">
+      
+  <img src="../../img/LOGO-QONTA-APP.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentación Técnica Qonta
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3.1 Arquitectura Técnica
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="deep-purple"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="deep-purple"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Compartir" aria-label="Compartir" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jruiz-beep/Qonta" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qonta
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Documentación Técnica Qonta" class="md-nav__button md-logo" aria-label="Documentación Técnica Qonta" data-md-component="logo">
+      
+  <img src="../../img/LOGO-QONTA-APP.png" alt="logo">
+
+    </a>
+    Documentación Técnica Qonta
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jruiz-beep/Qonta" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qonta
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Visión General del Sistema
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    1. Visión General del Sistema
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_vision_general/introduccion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Base de Datos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    2. Base de Datos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_modelo_datos/01_mer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 Diagrama Entidad-Relación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_modelo_datos/02_detalle_tablas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 Detalle de Tablas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    3. Arquitectura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 Arquitectura Técnica
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 Arquitectura Técnica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-vista-general-de-la-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Vista General de la Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-aplicaciones-y-modulos-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Aplicaciones y Módulos Principales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 Aplicaciones y Módulos Principales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321-qonta-core-modulo-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.1 Qonta Core (Módulo Principal)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322-modulo-crm-customer-relationship-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.2 Módulo CRM (Customer Relationship Management)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323-modulo-de-seguridad-y-administracion-comun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.3 Módulo de Seguridad y Administración (Común)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-base-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Base de Datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-capas-de-la-aplicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Capas de la Aplicación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-patrones-de-integracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Patrones de Integración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 Patrones de Integración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#351-api-graphql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.1 API GraphQL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#352-hooks-event-driven" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.2 Hooks (Event-Driven)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#353-bot-de-web-scraping-dian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.3 Bot de Web Scraping (DIAN)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#354-procesamiento-local-de-xml-project-extract-xml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.4 Procesamiento Local de XML (Project Extract XML)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#355-integracion-con-proveedor-tecnologico-kiai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.5 Integración con Proveedor Tecnológico (Kiai)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#356-exportacion-a-erps-contables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.6 Exportación a ERPs Contables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-despliegue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Despliegue
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#37-consideraciones-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Consideraciones de Seguridad
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Reglas de Negocio
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    4. Reglas de Negocio
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_reglas_negocio/hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 Hooks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Integraciones
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    5. Integraciones
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_integraciones/dian_bot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5.1 Integración con la DIAN (Bot)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_integraciones/kiai_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5.2 Integración con Kiai
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_integraciones/project_extract_xml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5.3 Extracción y Procesamiento de XML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registro de Cambios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="3-arquitectura-tecnica-de-qonta">3. Arquitectura Técnica de Qonta<a class="headerlink" href="#3-arquitectura-tecnica-de-qonta" title="Permanent link">&para;</a></h1>
+<p>Este documento describe la arquitectura técnica del sistema Qonta, incluyendo sus componentes principales, cómo interactúan las diferentes aplicaciones (Qonta Core, CRM, etc.), la estructura de la base de datos y los patrones de integración.</p>
+<h2 id="31-vista-general-de-la-arquitectura">3.1 Vista General de la Arquitectura<a class="headerlink" href="#31-vista-general-de-la-arquitectura" title="Permanent link">&para;</a></h2>
+<p>Qonta se concibe como un ecosistema de microservicios o módulos lógicos interconectados, construidos sobre una base de datos centralizada. La arquitectura está diseñada para ser escalable, extensible y fácil de mantener, permitiendo la adición de nuevas funcionalidades y la integración con sistemas externos.</p>
+<pre class="mermaid"><code>C4Context
+    title Sistema Qonta - Diagrama de Contexto
+
+    Person(usuario_cliente, "Usuario Cliente", "Empresario, contador o auxiliar que gestiona facturas.")
+    Person(admin_qonta, "Administrador Qonta", "Personal técnico o de soporte de Qonta.")
+    Person(integrador_externo, "Integrador Externo", "Sistemas externos que consumen la API de Qonta.")
+
+    System(qonta_sistema, "Sistema Qonta", "Sistema de automatización de acuse y causación de facturas electrónicas en Colombia.")
+
+    System_Ext(dian, "DIAN (Servicio Web)", "Dirección de Impuestos y Aduanas Nacionales de Colombia. Fuente oficial de facturas electrónicas.")
+    System_Ext(kiai_pt, "Kiai (Proveedor Tecnológico)", "Proveedor Tecnológico autorizado por la DIAN para el acuse de facturas.")
+    System_Ext(erp_contable, "ERP Contable Cliente", "Sistema ERP del cliente (e.g., Siigo, Siesa) para la importación de causaciones.")
+    System_Ext(smtp_server, "Servidor SMTP", "Servicio de envío de correos electrónicos.")
+
+    Rel(usuario_cliente, qonta_sistema, "Interactúa a través de la interfaz web")
+    Rel(admin_qonta, qonta_sistema, "Administra y monitorea")
+    Rel(integrador_externo, qonta_sistema, "Consume API GraphQL", "HTTPS")
+
+    Rel(qonta_sistema, dian, "Descarga facturas", "Bot web scraping")
+    Rel(qonta_sistema, kiai_pt, "Envía solicitudes de acuse", "API REST / HTTPS")
+    Rel(qonta_sistema, erp_contable, "Exporta causaciones", "Archivos planos / API (futuro)")
+    Rel(qonta_sistema, smtp_server, "Envía notificaciones", "SMTP")</code></pre>
+<h2 id="32-aplicaciones-y-modulos-principales">3.2 Aplicaciones y Módulos Principales<a class="headerlink" href="#32-aplicaciones-y-modulos-principales" title="Permanent link">&para;</a></h2>
+<p>El sistema se compone de las siguientes aplicaciones lógicas que comparten la misma base de datos y, en muchos casos, la misma capa de autenticación y autorización.</p>
+<h3 id="321-qonta-core-modulo-principal">3.2.1 Qonta Core (Módulo Principal)<a class="headerlink" href="#321-qonta-core-modulo-principal" title="Permanent link">&para;</a></h3>
+<p>Es la aplicación central de Qonta, encargada de las funcionalidades principales de facturación electrónica y causación.</p>
+<ul>
+<li><strong>Responsabilidades:</strong><ul>
+<li>Descarga y procesamiento de facturas electrónicas desde la DIAN.</li>
+<li>Gestión del ciclo de vida de las facturas (recibidas, aprobadas, rechazadas, causadas).</li>
+<li>Acuse de facturas con el proveedor tecnológico (Kiai).</li>
+<li>Motor de causación contable basado en reglas de negocio dinámicas (Hooks).</li>
+<li>Administración de datos maestros (Clientes, Proveedores, Plan de Cuentas, Centros de Costos, Impuestos, etc.).</li>
+<li>Generación de reportes y exportación de movimientos contables para ERPs.</li>
+</ul>
+</li>
+<li><strong>Tecnologías Clave:</strong> Node.js, Express, Sequelize (ORM), GraphQL, JavaScript (para Hooks), SQL Server (Base de Datos).</li>
+</ul>
+<h3 id="322-modulo-crm-customer-relationship-management">3.2.2 Módulo CRM (Customer Relationship Management)<a class="headerlink" href="#322-modulo-crm-customer-relationship-management" title="Permanent link">&para;</a></h3>
+<p>Gestiona las relaciones comerciales, oportunidades de venta y seguimiento con prospectos y clientes.</p>
+<ul>
+<li><strong>Responsabilidades:</strong><ul>
+<li>Gestión de contactos y empresas.</li>
+<li>Seguimiento de oportunidades de negocio.</li>
+<li>Registro de gestiones y actividades comerciales.</li>
+<li>Administración de productos y servicios de Qonta.</li>
+<li>Generación de informes de ventas.</li>
+</ul>
+</li>
+<li><strong>Integración con Qonta Core:</strong> Comparte usuarios y posiblemente información de clientes existentes que se convierten en usuarios de Qonta. Podría haber triggers desde el CRM que inicien procesos en Qonta (ej. un cliente ganado en CRM activa la creación en Qonta).</li>
+<li><strong>Tecnologías Clave:</strong> Node.js, Express, Sequelize (ORM), GraphQL, SQL Server.</li>
+</ul>
+<h3 id="323-modulo-de-seguridad-y-administracion-comun">3.2.3 Módulo de Seguridad y Administración (Común)<a class="headerlink" href="#323-modulo-de-seguridad-y-administracion-comun" title="Permanent link">&para;</a></h3>
+<p>Aunque no es una "aplicación" separada en el sentido de interfaz de usuario, este módulo representa el conjunto de funcionalidades transversales para la gestión de usuarios, roles, permisos y configuraciones generales del sistema.</p>
+<ul>
+<li><strong>Responsabilidades:</strong><ul>
+<li>Autenticación de usuarios.</li>
+<li>Autorización basada en roles y permisos.</li>
+<li>Gestión de módulos y acceso por usuario.</li>
+<li>Registro de notificaciones.</li>
+<li>Auditoría de acciones de usuario.</li>
+</ul>
+</li>
+<li><strong>Integración con otros módulos:</strong> Es utilizado por Qonta Core, CRM y cualquier otra aplicación que se añada al ecosistema.</li>
+<li><strong>Tecnologías Clave:</strong> Node.js, Express, JWT (JSON Web Tokens), SQL Server.</li>
+</ul>
+<h2 id="33-base-de-datos">3.3 Base de Datos<a class="headerlink" href="#33-base-de-datos" title="Permanent link">&para;</a></h2>
+<p>El sistema utiliza una base de datos <strong>SQL Server</strong> centralizada.</p>
+<ul>
+<li><strong>Diseño:</strong> Modelo Entidad-Relación relacional, normalizado para garantizar la integridad de los datos.</li>
+<li><strong>Acceso:</strong> Principalmente a través de Sequelize ORM para la capa de aplicación, aunque también se utilizan consultas SQL directas para optimizaciones o lógica compleja.</li>
+<li><strong>Integridad de Datos:</strong> Uso de claves primarias (PK), claves foráneas (FK), índices y restricciones para mantener la consistencia.</li>
+</ul>
+<h2 id="34-capas-de-la-aplicacion">3.4 Capas de la Aplicación<a class="headerlink" href="#34-capas-de-la-aplicacion" title="Permanent link">&para;</a></h2>
+<p>La arquitectura de cada aplicación sigue un patrón de capas bien definido:</p>
+<ol>
+<li><strong>Capa de Presentación (Frontend):</strong> Interfaces de usuario para Qonta y CRM (probablemente Angular/React/Vue).</li>
+<li><strong>Capa de API (GraphQL):</strong> Expone las funcionalidades del backend a los frontends y a integraciones externas. Utiliza GraphQL para consultas flexibles y eficientes.</li>
+<li><strong>Capa de Lógica de Negocio (Servicios/Controladores):</strong> Contiene la lógica central de cada módulo, coordinando las operaciones, aplicando reglas y gestionando transacciones. Aquí también residen los "Hooks".</li>
+<li><strong>Capa de Acceso a Datos (ORM/Repositorio):</strong> Interactúa directamente con la base de datos (Sequelize ORM), abstrayendo la lógica de persistencia.</li>
+</ol>
+<pre class="mermaid"><code>C4Container
+    title Contenedores del Sistema Qonta
+
+    System_Ext(dian, "DIAN (Servicio Web)", "Dirección de Impuestos y Aduanas Nacionales de Colombia.")
+    System_Ext(kiai_pt, "Kiai (Proveedor Tecnológico)", "Proveedor Tecnológico autorizado por la DIAN.")
+    System_Ext(erp_contable, "ERP Contable Cliente", "Sistema ERP del cliente (ej. Siigo).")
+
+    Person(usuario_web, "Usuario Web", "Usuario de Qonta o CRM a través del navegador.")
+    Person(usuario_bot, "Usuario Bot DIAN", "Configura y monitoriza el Bot de descarga.")
+    Person(integrador_api, "Integrador API", "Aplicación externa que consume la API GraphQL.")
+
+    Container(spa_qonta, "Aplicación Web (SPA) Qonta", "Aplicación de una sola página (Single Page Application) para la interfaz de usuario de Qonta.", "React/Angular/Vue.js")
+    Container(spa_crm, "Aplicación Web (SPA) CRM", "Aplicación de una sola página para la interfaz de usuario del CRM.", "React/Angular/Vue.js")
+    Container(api_gateway, "API Gateway / GraphQL Server", "Servidor de aplicación principal que expone la API GraphQL para todos los módulos.", "Node.js, Express, Apollo Server")
+    Container(microservicio_bot_dian, "Microservicio Bot DIAN", "Servicio dedicado a la automatización de la descarga de facturas desde la DIAN.", "Python/Node.js, Puppeteer/Selenium")
+    Container(microservicio_xml_extract, "Microservicio XML Extract", "Servicio local que parsea XMLs de DIAN e inserta en DB.", "Node.js, Prisma")
+    Container(db, "Base de Datos", "Base de datos relacional persistente.", "SQL Server")
+
+    Rel(usuario_web, spa_qonta, "Usa", "HTTPS")
+    Rel(usuario_web, spa_crm, "Usa", "HTTPS")
+    Rel(spa_qonta, api_gateway, "Realiza consultas y mutaciones", "GraphQL/HTTPS")
+    Rel(spa_crm, api_gateway, "Realiza consultas y mutaciones", "GraphQL/HTTPS")
+    Rel(integrador_api, api_gateway, "Consume API", "GraphQL/HTTPS")
+    Rel(api_gateway, db, "Lee y escribe datos", "JDBC/ODBC")
+
+    Rel(microservicio_bot_dian, dian, "Interactúa con interfaz web", "HTTP/Web Scraping")
+    Rel(microservicio_bot_dian, microservicio_xml_extract, "Almacena XML/PDF localmente")
+    Rel(microservicio_xml_extract, db, "Inserta datos de facturas", "JDBC/ODBC, Prisma")
+    Rel(microservicio_xml_extract, api_gateway, "Dispara Hooks (e.g., CrearProveedor)", "GraphQL/HTTPS")
+    Rel(api_gateway, kiai_pt, "Envía solicitudes de acuse", "API REST/HTTPS")
+    Rel(api_gateway, erp_contable, "Genera archivos para exportación", "Sistema de Archivos")
+    Rel(usuario_bot, microservicio_bot_dian, "Configura y monitoriza")</code></pre>
+<h2 id="35-patrones-de-integracion">3.5 Patrones de Integración<a class="headerlink" href="#35-patrones-de-integracion" title="Permanent link">&para;</a></h2>
+<h3 id="351-api-graphql">3.5.1 API GraphQL<a class="headerlink" href="#351-api-graphql" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Propósito:</strong> Interfaz principal para la comunicación entre el frontend y el backend, y para integraciones de terceros.</li>
+<li><strong>Beneficios:</strong> Flexibilidad para los clientes de la API al solicitar solo los datos que necesitan, reduciendo la sobre-obtención y sub-obtención de datos. Documentación auto-generada (Schema).</li>
+</ul>
+<h3 id="352-hooks-event-driven">3.5.2 Hooks (Event-Driven)<a class="headerlink" href="#352-hooks-event-driven" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Propósito:</strong> Permite la extensibilidad del sistema y la adaptación a reglas de negocio específicas de cada cliente sin modificar el código base.</li>
+<li><strong>Mecanismo:</strong> Basado en eventos. En puntos específicos del flujo de negocio (ej. <code>después de guardar factura</code>, <code>antes de generar causación</code>), el sistema invoca código JavaScript personalizado (hooks) que puede leer, modificar o cancelar operaciones. Los hooks se almacenan en la base de datos y se ejecutan en un entorno seguro (sandbox).</li>
+<li><strong>Uso:</strong> Ideal para implementar lógica de causación compleja, validaciones específicas, notificaciones personalizadas, etc.</li>
+</ul>
+<h3 id="353-bot-de-web-scraping-dian">3.5.3 Bot de Web Scraping (DIAN)<a class="headerlink" href="#353-bot-de-web-scraping-dian" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Propósito:</strong> Automatiza la descarga masiva de facturas electrónicas directamente desde la plataforma de la DIAN.</li>
+<li><strong>Mecanismo:</strong> Un microservicio independiente utiliza librerías de automatización de navegador (ej. Puppeteer/Selenium) para simular la interacción humana con el portal de la DIAN, descargar los XML y PDFs de las facturas y luego enviarlos a un sistema de procesamiento para su ingestión.</li>
+</ul>
+<h3 id="354-procesamiento-local-de-xml-project-extract-xml">3.5.4 Procesamiento Local de XML (Project Extract XML)<a class="headerlink" href="#354-procesamiento-local-de-xml-project-extract-xml" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Propósito:</strong> Parsear y estructurar la información de los XML descargados por el Bot DIAN antes de insertarla en la base de datos de Qonta.</li>
+<li><strong>Mecanismo:</strong> Un microservicio local basado en Node.js lee los archivos XML, los transforma en JSON y los inserta en las tablas <code>CufesXML</code>, <code>ItemsCufeXML</code>, <code>ItemCufeXMLTaxes</code>, <code>ItemCufeXMLTaxSubtotals</code>, <code>ItemCufeXMLAllowanceCharges</code> utilizando Prisma. Además, dispara el hook <code>CrearProveedor</code> a través de la API de Qonta para gestionar la creación/actualización automática de proveedores.</li>
+</ul>
+<h3 id="355-integracion-con-proveedor-tecnologico-kiai">3.5.5 Integración con Proveedor Tecnológico (Kiai)<a class="headerlink" href="#355-integracion-con-proveedor-tecnologico-kiai" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Propósito:</strong> Cumplir con los requisitos de acuse de la DIAN para facturas electrónicas y eventos Radián.</li>
+<li><strong>Mecanismo:</strong> Qonta consume la API REST de Kiai para enviar los eventos de acuse, recibo de mercancías, y aceptación/rechazo de facturas.</li>
+</ul>
+<h3 id="356-exportacion-a-erps-contables">3.5.6 Exportación a ERPs Contables<a class="headerlink" href="#356-exportacion-a-erps-contables" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Propósito:</strong> Integrar las causaciones generadas en Qonta con los sistemas de contabilidad existentes de los clientes.</li>
+<li><strong>Mecanismo:</strong> Actualmente, se realiza principalmente mediante la generación de archivos planos (CSV, TXT) en formatos específicos que los ERPs pueden importar. Se contempla la futura implementación de APIs para una integración más directa.</li>
+</ul>
+<h2 id="36-despliegue">3.6 Despliegue<a class="headerlink" href="#36-despliegue" title="Permanent link">&para;</a></h2>
+<p>Los componentes de Qonta (API GraphQL, Microservicio Bot DIAN, Microservicio XML Extract) están diseñados para ser desplegados en entornos contenerizados (Docker) y orquestados (Kubernetes) para asegurar alta disponibilidad y escalabilidad.</p>
+<h2 id="37-consideraciones-de-seguridad">3.7 Consideraciones de Seguridad<a class="headerlink" href="#37-consideraciones-de-seguridad" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Autenticación y Autorización:</strong> Uso de JWT (JSON Web Tokens) para asegurar las APIs. Control de acceso basado en roles y permisos.</li>
+<li><strong>Protección de Datos:</strong> Cifrado de datos sensibles en la base de datos y en tránsito (HTTPS/TLS).</li>
+<li><strong>Auditoría:</strong> Registro de eventos clave y cambios en los datos.</li>
+<li><strong>Seguridad del Bot y XML Extract:</strong> Operación en entornos aislados y con permisos mínimos para minimizar riesgos de acceso no autorizado a credenciales de la DIAN o a la manipulación de datos sensibles.
+````http://googleusercontent.com/image_generation_content/6</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "search.highlight", "search.share", "toc.integrate"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
