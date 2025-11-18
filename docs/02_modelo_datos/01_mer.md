@@ -2,9 +2,316 @@
 
 Este documento describe el modelo de datos de Qonta, presentando las tablas principales del sistema y sus relaciones. El diseño de la base de datos es fundamental para el manejo eficiente y la integridad de la información de las facturas electrónicas y los procesos de causación.
 
-## Diagrama Entidad-Relación General
+## Diagramas por Módulo Funcional
 
-El siguiente diagrama proporciona una vista de alto nivel de las entidades principales y sus interacciones en la base de datos de Qonta.
+Para facilitar la comprensión, el modelo de datos se ha dividido en los siguientes diagramas funcionales.
+
+### 1. Módulo de Facturación y Causación
+
+Este diagrama muestra las entidades centrales del proceso de recepción, aprobación y contabilización de facturas.
+
+``` mermaid
+    classDiagram
+    direction LR
+    class FacturasRecibidasDian {
+        varchar(300) Cufe
+        varchar(100) Estado
+        decimal(19,3) Valor
+        datetime2 FechaEmision
+        datetime2 FechaVencimiento
+        uniqueidentifier ClienteFK
+        uniqueidentifier ProveedorFK
+        uniqueidentifier UsuarioAsignadoFK
+        bit Causada
+        bit Pagada
+        uniqueidentifier Id
+    }
+    class CufesXML {
+        varchar(100) NumeroFactura
+        datetime2 FechaEmision
+        varchar(1000) CUFE
+        decimal(19,3) ValorTotal
+        uniqueidentifier Id
+    }
+    class ItemsCufeXML {
+        uniqueidentifier CufeXMLFK
+        varchar(1000) Description
+        decimal(19,3) LineExtensionAmount
+        uniqueidentifier ClasificacionFK
+        uniqueidentifier CuentaK
+        uniqueidentifier Id
+    }
+    class Causaciones {
+        uniqueidentifier FacturaFK
+        uniqueidentifier ItemCufeXMLFK
+        uniqueidentifier CuentaFK
+        decimal(10,2) Debito
+        decimal(10,2) Credito
+        uniqueidentifier CentroCostosFK
+        datetime2 Fecha
+        uniqueidentifier Id
+    }
+    class TrazabilidadesCausaciones {
+        uniqueidentifier CausacionFK
+        uniqueidentifier UsuarioFK
+        datetime2 Fecha
+        varchar(max) Cambios
+        uniqueidentifier Id
+    }
+    class CentrosCostos {
+        varchar(100) Nombre
+        varchar(100) Codigo
+        uniqueidentifier ClienteFK
+        uniqueidentifier Id
+    }
+
+    FacturasRecibidasDian --> CufesXML : CufeXMLFKID
+    FacturasRecibidasDian --> Proveedores : ProveedorFKID
+    FacturasRecibidasDian --> Clientes : ClienteFKID
+    ItemsCufeXML --> CufesXML : CufeXMLFKID
+    Causaciones --> FacturasRecibidasDian : FacturaFKID
+    Causaciones --> ItemsCufeXML : ItemCufeXMLFKID
+    Causaciones --> PlandeCuentas : CuentaFKID
+    Causaciones --> CentrosCostos : CentroCostosFKID
+    TrazabilidadesCausaciones --> Causaciones : CausacionFKID
+    TrazabilidadesCausaciones --> Usuarios : UsuarioFKID
+```
+
+### 2. Módulo de Terceros (Clientes, Proveedores y Usuarios)
+
+Este modelo representa las entidades principales que interactúan con el sistema, como clientes, proveedores y usuarios internos.
+
+``` mermaid
+    classDiagram
+    direction RL
+    class Clientes {
+        varchar(100) NumeroDocumento
+        varchar(1000) RazonSocial
+        uniqueidentifier ActividadEconomicaFK
+        uniqueidentifier Id
+    }
+    class Proveedores {
+        varchar(100) NumeroDocumento
+        varchar(250) RazonSocial
+        uniqueidentifier ClienteFK
+        uniqueidentifier ActividadEconomicaFK
+        uniqueidentifier Id
+    }
+    class Usuarios {
+        varchar(200) Nombre
+        varchar(200) Apellidos
+        varchar(300) Correo
+        uniqueidentifier ClienteFK
+        uniqueidentifier Id
+    }
+    class Terceros {
+        uniqueidentifier ClienteFK
+        varchar(500) Nombre
+        varchar(100) NumeroDocumento
+        uniqueidentifier Id
+    }
+    class ActividadesEconomicas {
+        varchar(10) Codigo
+        varchar(1000) Nombre
+        uniqueidentifier Id
+    }
+    class TiposDocumentos {
+        varchar(100) Codigo
+        varchar(200) Nombre
+        uniqueidentifier Id
+    }
+
+    Proveedores --> Clientes : ClienteFKID
+    Usuarios --> Clientes : ClienteFKID
+    Terceros --> Clientes : ClienteFKID
+    Clientes --> ActividadesEconomicas : ActividadEconomicaFKID
+    Proveedores --> ActividadesEconomicas : ActividadEconomicaFKID
+    Clientes --> TiposDocumentos : TipoDocumentoFKID
+    Proveedores --> TiposDocumentos : TipoDocumentoFKID
+    Terceros --> TiposDocumentos : TipoDocumentoFKID
+```
+
+### 3. Módulo de Configuración Contable y Fiscal
+
+Aquí se definen las tablas para la configuración de planes de cuentas, impuestos, retenciones y sus clasificaciones.
+
+``` mermaid
+    classDiagram
+    class PlandeCuentas {
+        varchar(100) NumCuenta
+        varchar(100) Nombre
+        uniqueidentifier ClienteFK
+        uniqueidentifier Id
+    }
+    class Impuestos {
+        varchar(100) Codigo
+        varchar(500) Nombre
+        varchar(100) Porcentaje
+        uniqueidentifier Id
+    }
+    class ConceptosRetencion {
+        varchar(100) Nombre
+        decimal(10,2) TarifaDeclarante
+        decimal(10,2) Base
+        uniqueidentifier Id
+    }
+    class ClasificacionesConceptos {
+        uniqueidentifier ProveedorFK
+        uniqueidentifier ConceptoFK
+        uniqueidentifier CuentaFK
+        uniqueidentifier ClienteFK
+        uniqueidentifier Id
+    }
+    class ImpuestosICA {
+        varchar(250) Nombre
+        decimal(19,3) Porcentaje
+        uniqueidentifier MunicipioFK
+        uniqueidentifier Id
+    }
+    class ResponsabilidadesFiscales {
+        varchar(10) Codigo
+        varchar(1000) Nombre
+        uniqueidentifier Id
+    }
+
+    PlandeCuentas --> Clientes : ClienteFKID
+    ClasificacionesConceptos --> Clientes : ClienteFKID
+    ClasificacionesConceptos --> Proveedores : ProveedorFKID
+    ClasificacionesConceptos --> ConceptosRetencion : ConceptoFKID
+    ClasificacionesConceptos --> PlandeCuentas : CuentaFKID
+    ImpuestosICAxClientes --> ImpuestosICA : ICAFKID
+    ImpuestosICAxClientes --> Clientes : ClienteFKID
+    ResponsabilidadesFiscalesClientes --> ResponsabilidadesFiscales : ResposabilidadFiscalFKID
+    ResponsabilidadesFiscalesProveedores --> ResponsabilidadesFiscales : ResposabilidadFiscalFKID
+```
+
+### 4. Módulo CRM
+
+Este diagrama agrupa todas las entidades relacionadas con la Gestión de Relaciones con Clientes (CRM).
+
+``` mermaid
+    classDiagram
+    class OportunidadesCrm {
+        varchar(100) Nombre
+        uniqueidentifier EmpresaFK
+        uniqueidentifier EtapasFk
+        uniqueidentifier UsuarioFk
+        uniqueidentifier Id
+    }
+    class EmpresasCrm {
+        varchar(100) Nombre
+        varchar(100) Identificacion
+        uniqueidentifier SectorFK
+        uniqueidentifier Id
+    }
+    class ContactosEmpresasCrm {
+        varchar(100) Nombre
+        varchar(100) Correo
+        uniqueidentifier EmpresaCrmFk
+        uniqueidentifier Id
+    }
+    class GestionesCrm {
+        varchar(100) Nombre
+        datetime2 FechaGestion
+        uniqueidentifier OportunidadCrmFK
+        uniqueidentifier Id
+    }
+    class EtapasCrm {
+        varchar(100) Nombre
+        int Orden
+        uniqueidentifier Id
+    }
+    class SectoresCrm {
+        varchar(100) Nombre
+        uniqueidentifier Id
+    }
+
+    OportunidadesCrm --> EmpresasCrm : EmpresaFKID
+    OportunidadesCrm --> EtapasCrm : EtapasFkID
+    OportunidadesCrm --> Usuarios : UsuarioFkID
+    OportunidadesCrm --> ContactosEmpresasCrm : ContactoEmpresaCrmFkID
+    ContactosEmpresasCrm --> EmpresasCrm : EmpresaCrmFkID
+    GestionesCrm --> OportunidadesCrm : OportunidadCrmFKID
+    EmpresasCrm --> SectoresCrm : SectorFKID
+```
+
+### 5. Módulo de Datos Maestros y Geográficos
+
+Contiene las tablas de soporte con información que no cambia frecuentemente, como la estructura geográfica.
+
+``` mermaid
+    classDiagram
+    class Paises {
+        varchar(100) Nombre
+        varchar(100) Codigo
+        uniqueidentifier Id
+    }
+    class Departamentos {
+        varchar(500) Nombre
+        varchar(10) Codigo
+        uniqueidentifier PaisFK
+        uniqueidentifier Id
+    }
+    class Municipios {
+        varchar(500) Nombre
+        varchar(10) Codigo
+        uniqueidentifier DepartamentoFK
+        uniqueidentifier Id
+    }
+    class CodigosPostales {
+        varchar(100) PostalCodigo
+        uniqueidentifier MunicipioFK
+        uniqueidentifier Id
+    }
+    
+    Departamentos --> Paises : PaisFKID
+    Municipios --> Departamentos : DepartamentoFKID
+    CodigosPostales --> Municipios : MunicipioFKID
+```
+
+### 6. Módulo de Seguridad y Acceso
+
+Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para gestionar permisos.
+
+``` mermaid
+    classDiagram
+    class Usuarios {
+        varchar(200) Nombre
+        varchar(300) Correo
+        uniqueidentifier Id
+    }
+    class Roles {
+        nvarchar(200) Nombre
+        uniqueidentifier ModuloFK
+        uniqueidentifier Id
+    }
+    class Modulos {
+        varchar(100) Nombre
+        varchar(100) IdMenu
+        uniqueidentifier Id
+    }
+    class RolesxUsuarios {
+        uniqueidentifier UsuarioId
+        uniqueidentifier RoleId
+        uniqueidentifier Id
+    }
+    class AplicacionesxUsuarios {
+        uniqueidentifier UsuarioFK
+        uniqueidentifier ModuloFK
+        uniqueidentifier Id
+    }
+
+    RolesxUsuarios --> Usuarios : UsuarioIdID
+    RolesxUsuarios --> Roles : RoleIdID
+    Roles --> Modulos : ModuloFKID
+    AplicacionesxUsuarios --> Usuarios : UsuarioFKID
+    AplicacionesxUsuarios --> Modulos : ModuloFKID
+```
+
+<!-- El siguiente bloque contiene la definición de todas las tablas para que Mermaid pueda renderizar los diagramas. Se puede mantener colapsado. -->
+
+<details>
+<summary>Definición de Clases (Tablas)</summary>
 
 ``` mermaid
     classDiagram
