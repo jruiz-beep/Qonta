@@ -39,11 +39,10 @@ jobs:
         uses: actions/configure-pages@v3 
 
       - name: Upload artifact (Publicación)
-        # Sube la carpeta 'site' generada como artefacto
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3 # <--- CAMBIO AQUÍ a v3
         with:
           path: './site' 
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4 # <--- CAMBIO AQUÍ a v4
