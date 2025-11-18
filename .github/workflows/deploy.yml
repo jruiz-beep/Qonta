@@ -1,0 +1,33 @@
+name: Deploy MkDocs to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # o la rama donde haces push a tu código fuente de MkDocs (por ejemplo, master)
+  workflow_dispatch: # Permite ejecutar el workflow manualmente desde GitHub Actions
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Permiso para escribir en el repositorio (para la rama gh-pages)
+      pages: write # Permiso para desplegar en GitHub Pages
+      id-token: write # Permiso para autenticación de OIDC (requerido para Pages)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Necesario para mkdocs gh-deploy si el historial es importante
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x # Ajusta a la versión de Python que usas
+
+      - name: Install MkDocs and dependencies
+        run: |
+          pip install mkdocs mkdocs-material pymdown-extensions
+
+      - name: Deploy MkDocs to GitHub Pages
+        run: mkdocs gh-deploy --force # --force es bueno para asegurar que se suben los cambios

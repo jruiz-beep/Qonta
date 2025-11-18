@@ -1,0 +1,16 @@
+# .gitignore
+
+# Directorio de construcción de MkDocs
+site/
+
+# Entornos virtuales de Python
+.venv/
+venv/
+
+# Archivos de caché
+__pycache__/
+*.pyc
+
+# Archivos de macOS/Windows
+.DS_Store
+Thumbs.db
