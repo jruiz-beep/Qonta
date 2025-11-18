@@ -1,19 +1,62 @@
 /*
-Colores de Qonta (Ejemplo basado en LOGO y paleta provista):
-Azul Cian/Claro: #4DC9E5 (El color claro de la Q)
-Azul Oscuro/Morado: #3D337F (El color predominante en 'Qonta')
+  Colores de Qonta
+  Azul Cian/Claro: #4DC9E5
+  Azul Oscuro/Morado: #3D337F
 */
 
 :root {
-  /* Forzamos el color primario (Encabezados, barra superior, botones principales) */
-  --md-primary-fg-color: #3D337F;
-  /* Forzamos el color de acento (Enlaces, iconos activos) */
-  --md-accent-fg-color: #4DC9E5;
+  /* Colores primarios y de acento para el tema */
+  --md-primary-fg-color:        #3D337F;
+  --md-accent-fg-color:         #4DC9E5;
+
+  /* Colores de texto y fondo para el modo oscuro (slate) */
+  --md-default-fg-color:        #F5F5F5;
+  --md-default-bg-color:        #1a1a1a;
 }
 
-/* Ajustes para el modo oscuro si es necesario (el esquema 'slate' ya maneja bien los fondos) */
-[data-md-color-scheme="slate"] {
-  /* Asegura que el texto y los fondos oscuros se vean bien */
-  --md-default-fg-color: #F5F5F5;
-  --md-default-bg-color: #1E1E1E;
+/* --- ESTILOS DE NAVEGACIÓN LATERAL --- */
+
+/* Fondo de la barra lateral (un poco más claro que el fondo principal) */
+.md-sidebar {
+  background-color: #2b2b2b !important;
+}
+
+/* Color de texto de los enlaces de navegación */
+.md-nav__link {
+  color: var(--md-default-fg-color) !important;
+}
+
+/* Color del enlace al pasar el ratón y cuando está activo */
+.md-nav__link:hover,
+.md-nav__link--active {
+  color: var(--md-accent-fg-color) !important;
+}
+
+/* Estilo para el elemento de navegación activo (resaltado) */
+.md-nav__item--active > .md-nav__link {
+  background-color: rgba(77, 201, 229, 0.1); /* Fondo sutil con color de acento */
+  border-left: 3px solid var(--md-accent-fg-color); /* Borde izquierdo */
+  padding-left: calc(1.2rem - 3px); /* Ajuste para compensar el borde */
+}
+
+/* --- OTROS AJUSTES DE COLOR --- */
+
+/* Encabezado superior */
+.md-header {
+  background-color: var(--md-primary-fg-color) !important;
+}
+
+/* Enlaces en el contenido principal */
+.md-typeset a {
+  color: var(--md-accent-fg-color);
+}
+
+/* Estilos para el zoom de diagramas Mermaid */
+.mermaid svg {
+  cursor: move; /* Cambia el cursor a una mano para indicar que se puede arrastrar */
+  cursor: grab;
+}
+
+.mermaid svg:active {
+  cursor: grabbing;
 }
