@@ -1,50 +1,58 @@
 site_name: Documentación Técnica Qonta
-site_url: https://jruiz-beep.github.io/Qonta/ # Actualiza con la URL final
+site_url: https://[tu-usuario].github.io/tu-repo-qonta-docs/ # Actualiza con la URL final
 site_description: Documentación técnica del sistema Qonta, enfocado en el acuse y causación de facturas electrónicas de Colombia.
-repo_url: https://github.com/jruiz-beep/Qonta.git # Enlace a tu repositorio de GitHub
-repo_name: Qonta
-edit_uri: edit/main/docs/ # Configura esto si quieres que los usuarios puedan editar directamente desde GitHub
+repo_url: https://github.com/[tu-usuario]/tu-repo-qonta-docs
+repo_name: tu-repo-qonta-docs
+edit_uri: edit/main/docs/
 
-# Tema de MkDocs
+# --- Configuración del Tema y Colores de Qonta ---
 theme:
   name: material
   language: es
+  logo: img/LOGO-QONTA-APP.png # Asegúrate de colocar el logo en docs/img/
+  favicon: img/LOGO-QONTA-APP.png # Usar el logo como favicon
   features:
     - navigation.tabs
     - navigation.sections
     - search.highlight
     - search.share
     - toc.integrate
+  # Paleta de colores forzada a oscuro, usando los colores de Qonta como base
   palette:
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Cambiar a modo oscuro
-      primary: teal # Puedes elegir otros colores
-      accent: amber
-    - scheme: slate
+    - scheme: slate # Modo Oscuro
       toggle:
         icon: material/toggle-switch
-        name: Cambiar a modo claro
-      primary: blue
-      accent: lime
+        name: Cambiar a modo claro (Actualmente Oscuro)
+      # Colores basados en el logo y la paleta provista:
+      # Los colores predominantes del logo son el azul oscuro y el morado/cian.
+      primary: custom # Usamos 'custom' y lo definimos en css extra
+      accent: deep purple
 
-# Navegación del sitio
+# --- Archivo CSS Personalizado para Colores de Qonta ---
+# MkDocs Material te permite definir colores primarios exactos.
+# Debes crear el archivo docs/extra.css con el contenido del punto 3.
+extra_css:
+  - extra.css 
+
+# --- Navegación del sitio (Usando los nuevos README.md) ---
 nav:
-  - Inicio: 'index.md'
-  - 1. Visión General del Sistema:
-      - Introducción: '01_vision_general/introduccion.md'
-  - 2. Base de Datos:
-      - 2.1 Modelo Entidad-Relación: '02_modelo_datos/01_mer.md'
-      - 2.2 Detalle de Tablas: '02_modelo_datos/02_detalle_tablas.md' # Este archivo lo llenaremos luego
-  - 3. Arquitectura Técnica: '03_arquitectura/arquitectura_tecnica.md'
-  - 4. Reglas de Negocio (Hooks): '04_reglas_negocio/hooks.md'
-  - 5. Integraciones:
-      - Bot DIAN: '05_integraciones/dian_bot.md'
-      - API Kiai: '05_integraciones/kiai_api.md'
-  - Historial de Versiones: 'CHANGELOG.md'
+  - 'Inicio': 'index.md'
+  - '1. Visión General del Sistema': '01_vision_general/README.md' # Nuevo README
+    - 'Introducción': '01_vision_general/introduccion.md'
+  - '2. Base de Datos': '02_modelo_datos/README.md' # Nuevo README
+    - '2.1 Diagrama Entidad-Relación': '02_modelo_datos/01_mer.md'
+    - '2.2 Detalle de Tablas': '02_modelo_datos/02_detalle_tablas.md'
+  - '3. Arquitectura': '03_arquitectura/README.md' # Nuevo README
+    - '3.1 Arquitectura Técnica': '03_arquitectura/arquitectura_tecnica.md'
+  - '4. Reglas de Negocio': '04_reglas_negocio/README.md' # Nuevo README
+    - '4.1 Hooks': '04_reglas_negocio/hooks.md'
+  - '5. Integraciones': '05_integraciones/README.md' # Nuevo README
+    - '5.1 Integración con la DIAN (Bot)': '05_integraciones/dian_bot.md'
+    - '5.2 Integración con Kiai': '05_integraciones/kiai_api.md'
+    - '5.3 Extracción y Procesamiento de XML': '05_integraciones/project_extract_xml.md'
+  - 'Registro de Cambios': 'CHANGELOG.md'
 
-# Extensiones de Markdown (para Mermaid y otras funcionalidades)
+# --- Extensiones de Markdown (para Mermaid y otras funcionalidades) ---
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -54,14 +62,19 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-  - admonition # Para bloques de notas, advertencias, etc.
+  - admonition
   - pymdownx.details
   - pymdownx.superfences
-  - attr_list # Para atributos de HTML en Markdown
-  - md_in_html # Para Markdown dentro de HTML (experimental)
+  - attr_list
+  - md_in_html
   - toc:
-      permalink: true # Enlaces permanentes a los encabezados
+      permalink: true
 
 # Configuración para GitHub Pages
 plugins:
   - search
+
+# Carpeta para archivos adicionales (imágenes, CSS)
+extra:
+  # La carpeta docs/img es donde irá el logo
+  # Y el archivo extra.css irá directamente en docs/

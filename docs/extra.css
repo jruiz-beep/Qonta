@@ -1,0 +1,19 @@
+/*
+Colores de Qonta (Ejemplo basado en LOGO y paleta provista):
+Azul Cian/Claro: #4DC9E5 (El color claro de la Q)
+Azul Oscuro/Morado: #3D337F (El color predominante en 'Qonta')
+*/
+
+:root {
+  /* Forzamos el color primario (Encabezados, barra superior, botones principales) */
+  --md-primary-fg-color: #3D337F;
+  /* Forzamos el color de acento (Enlaces, iconos activos) */
+  --md-accent-fg-color: #4DC9E5;
+}
+
+/* Ajustes para el modo oscuro si es necesario (el esquema 'slate' ya maneja bien los fondos) */
+[data-md-color-scheme="slate"] {
+  /* Asegura que el texto y los fondos oscuros se vean bien */
+  --md-default-fg-color: #F5F5F5;
+  --md-default-bg-color: #1E1E1E;
+}
