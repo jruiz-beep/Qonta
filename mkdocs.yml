@@ -1,0 +1,67 @@
+site_name: Documentación Técnica Qonta
+site_url: https://jruiz-beep.github.io/Qonta/ # Actualiza con la URL final
+site_description: Documentación técnica del sistema Qonta, enfocado en el acuse y causación de facturas electrónicas de Colombia.
+repo_url: https://github.com/jruiz-beep/Qonta.git # Enlace a tu repositorio de GitHub
+repo_name: Qonta
+edit_uri: edit/main/docs/ # Configura esto si quieres que los usuarios puedan editar directamente desde GitHub
+
+# Tema de MkDocs
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.highlight
+    - search.share
+    - toc.integrate
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Cambiar a modo oscuro
+      primary: teal # Puedes elegir otros colores
+      accent: amber
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Cambiar a modo claro
+      primary: blue
+      accent: lime
+
+# Navegación del sitio
+nav:
+  - Inicio: 'index.md'
+  - 1. Visión General del Sistema:
+      - Introducción: '01_vision_general/introduccion.md'
+  - 2. Base de Datos:
+      - 2.1 Modelo Entidad-Relación: '02_modelo_datos/01_mer.md'
+      - 2.2 Detalle de Tablas: '02_modelo_datos/02_detalle_tablas.md' # Este archivo lo llenaremos luego
+  - 3. Arquitectura Técnica: '03_arquitectura/arquitectura_tecnica.md'
+  - 4. Reglas de Negocio (Hooks): '04_reglas_negocio/hooks.md'
+  - 5. Integraciones:
+      - Bot DIAN: '05_integraciones/dian_bot.md'
+      - API Kiai: '05_integraciones/kiai_api.md'
+  - Historial de Versiones: 'CHANGELOG.md'
+
+# Extensiones de Markdown (para Mermaid y otras funcionalidades)
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_numbers: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition # Para bloques de notas, advertencias, etc.
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list # Para atributos de HTML en Markdown
+  - md_in_html # Para Markdown dentro de HTML (experimental)
+  - toc:
+      permalink: true # Enlaces permanentes a los encabezados
+
+# Configuración para GitHub Pages
+plugins:
+  - search
