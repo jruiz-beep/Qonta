@@ -8,6 +8,8 @@ on:
 
 jobs:
   deploy:
+    environment: # <--- ¡AÑADE ESTO!
+      name: github-pages # <--- ¡Y ESTO!
     runs-on: ubuntu-latest
     permissions:
       contents: write
