@@ -8,183 +8,944 @@ Estas tablas forman el corazón del sistema Qonta, gestionando la información d
 
 ### `ActividadesEconomicas`
 * **Propósito:** Almacena el listado de actividades económicas de acuerdo a la clasificación CIIU.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Codigo`.
+* **Campos:**
+	- `Nombre` varchar(1000)
+	- `Codigo` varchar(10)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
+
+### `AplicacionesxUsuarios`
+* **Propósito:** Asocia a los usuarios con las diferentes aplicaciones o módulos a los que tienen acceso.
+* **Campos:**
+	- `UsuarioFK` uniqueidentifier
+	- `ModuloFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `Causaciones`
 * **Propósito:** Contiene los registros detallados de las causaciones contables generadas para cada ítem de una factura.
-* **Campos Clave:** `Id` (PK), `FacturaFK` (Factura relacionada), `CufeXMLFK` (XML CUFE relacionado), `ItemCufeXMLFK` (Ítem del XML CUFE), `ClasificacionFK` (Clasificación del concepto), `CuentaFK` (Cuenta contable), `Debito`, `Credito`, `ConceptoFK` (Concepto de retención/impuesto), `ProveedorFK`, `Observaciones`.
+* **Campos:**
+	- `FacturaFK` uniqueidentifier
+	- `CufeXMLFK` uniqueidentifier
+	- `ItemCufeXMLFK` uniqueidentifier
+	- `ClasificacionFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `Debito` decimal(10,2)
+	- `Credito` decimal(10,2)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `ConceptoFK` uniqueidentifier
+	- `Observaciones` varchar(500)
+	- `Posicion` decimal(19,3)
+	- `ProveedorFK` uniqueidentifier
+	- `Auxiliar` varchar(max)
+	- `ReteFuente` bit
+	- `ReteIva` bit
+	- `ReteICA` bit
+	- `TerceroFK` uniqueidentifier
+	- `Comprobante` varchar(100)
+	- `CentroCostosFK` uniqueidentifier
+	- `BaseRF` decimal(19,3)
+	- `Fecha` datetime2
+	- `CuentaPorPagar` bit
+	- `Gasto` bit
+	- `RetencionAsumida` bit
+	- `ImpMayorValor` bit
+	- `ImpuestoBit` bit
+	- `ImpuestoFK` uniqueidentifier
+	- `NoDeducible` bit
+	- `Id` uniqueidentifier
 
 ### `CausacionesOriginales`
 * **Propósito:** Almacena una copia de las causaciones originales generadas antes de cualquier modificación, para propósitos de auditoría y trazabilidad.
-* **Campos Clave:** `Id` (PK), `FacturaFK`, `CufeXMLFK`, `ClasificacionFK`, `CuentaFK`, `Debito`, `Credito`, `Modificada` (Indica si fue modificada).
+* **Campos:**
+	- `FacturaFK` uniqueidentifier
+	- `CufeXMLFK` uniqueidentifier
+	- `ClasificacionFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `Debito` decimal(19,3)
+	- `Credito` decimal(19,3)
+	- `ConceptoFK` uniqueidentifier
+	- `Observaciones` varchar(500)
+	- `Posicion` decimal(19,3)
+	- `ProveedorFK` uniqueidentifier
+	- `Impuesto` bit
+	- `UsuarioCreacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `Modificada` bit
+	- `ReteFuente` bit
+	- `Comprobante` varchar(100)
+	- `CentroCostosFK` uniqueidentifier
+	- `BaseRF` decimal(19,3)
+	- `Fecha` datetime2
+	- `CuentaPorPagar` bit
+	- `Gasto` bit
+	- `RetencionAsumida` bit
+	- `Id` uniqueidentifier
 
 ### `CentrosCostos`
 * **Propósito:** Gestiona los centros de costos definidos por cada cliente.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Codigo`, `ClienteFK`.
+* **Campos:**
+	- `Nombre` varchar(100)
+	- `Codigo` varchar(100)
+	- `ClienteFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `CentrosCostosxfacturas`
 * **Propósito:** Relaciona los centros de costos con las facturas, permitiendo la distribución de valores.
-* **Campos Clave:** `Id` (PK), `CentroCostosFK`, `CuentaFK`, `FacturaFK`, `Porcentaje`, `Valor`.
+* **Campos:**
+	- `CentroCostosFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `FacturaFK` uniqueidentifier
+	- `Porcentaje` decimal(19,3)
+	- `Valor` decimal(19,3)
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `ClasificacionCCFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `CierresMeses`
 * **Propósito:** Registra los cierres de mes contables para cada cliente, indicando si un período está cerrado para causaciones.
-* **Campos Clave:** `Id` (PK), `Mes`, `Anio`, `Estado`, `ClienteFK`.
-
-### `ClasificacionesCentrosCostos`
-* **Propósito:** Permite agrupar o clasificar centros de costos para una gestión más organizada.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Descripcion`, `ClienteFK`.
-
-### `ClasificacionesConceptos`
-* **Propósito:** Define clasificaciones para los conceptos de gasto o ingreso, asociándolos a proveedores y cuentas contables específicas.
-* **Campos Clave:** `Id` (PK), `ProveedorFK`, `ConceptoFK`, `ClienteFK`, `CuentaFK`, `AplicaCentroCosto`.
-
-### `Clientes`
-* **Propósito:** Almacena la información de los clientes (empresas) que utilizan el sistema Qonta.
-* **Campos Clave:** `Id` (PK), `NumeroDocumento`, `RazonSocial`, `ActividadEconomicaFK`, `Correo`, `Estado`, `Acuse`, `Autoretenedor`.
+* **Campos:**
+	- `Mes` varchar(100)
+	- `Anio` varchar(10)
+	- `Estado` varchar(100)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `ClienteFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `CodigosPostales`
-* **Propósito:** Catálogo de códigos postales.
-* **Campos Clave:** `Id` (PK), `PostalCodigo`, `MunicipioFK`.
+* **Propósito:** Contiene los códigos postales asociados a municipios y su descripción.
+* **Campos:**
+	- `MunicipioFK` uniqueidentifier
+	- `Tipo` varchar(100)
+	- `PostalCodigo` varchar(100)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Descripcion` varchar(max)
+	- `Id` uniqueidentifier
 
 ### `ConceptosRetencion`
-* **Propósito:** Define los diferentes conceptos de retención con sus tarifas y bases aplicables.
-* **Campos Clave:** `Id` (PK), `Nombre`, `TarifaDeclarante`, `TarifaNoDeclarante`, `Base`, `Tipo` (ReteFuente, ReteIVA, ReteICA).
+* **Propósito:** Catálogo de conceptos de retención y sus tarifas aplicables.
+* **Campos:**
+	- `Nombre` varchar(100)
+	- `TarifaDeclarante` decimal(10,2)
+	- `TarifaNoDeclarante` decimal(10,2)
+	- `Base` decimal(10,2)
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Operacion` varchar(100)
+	- `ReteIva` varchar(100)
+	- `Tipo` varchar(100)
+	- `Id` uniqueidentifier
 
 ### `ConceptosRetencionxClientes`
-* **Propósito:** Asocia conceptos de retención específicos a cada cliente, permitiendo la personalización de las cuentas contables asociadas.
-* **Campos Clave:** `Id` (PK), `ConceptoFK`, `ClienteFK`, `CuentaFK`.
+* **Propósito:** Asocia conceptos de retención específicos a clientes y sus cuentas.
+* **Campos:**
+	- `ConceptoFK` uniqueidentifier
+	- `ClienteFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `CuentaNoDeclaranteFK` uniqueidentifier
+	- `CuentaReteIvaFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `CufesXML`
-* **Propósito:** Almacena los datos principales extraídos de los archivos XML de facturas electrónicas, identificados por su CUFE.
-* **Campos Clave:** `Id` (PK), `CUFE`, `NumeroFactura`, `Emisor`, `FechaEmision`, `ValorTotal`.
+* **Propósito:** Guarda los metadatos y el CUFE de los documentos electrónicos recibidos/enviados.
+* **Campos:**
+	- `NumeroFactura` varchar(100)
+	- `Emisor` varchar(100)
+	- `TipoFactura` varchar(100)
+	- `FechaEmision` datetime2
+	- `FechaVencimiento` datetime2
+	- `CUFE` varchar(1000)
+	- `FormaPago` varchar(10)
+	- `ValorTotal` decimal(19,3)
+	- `Auxiliar` varchar(max)
+	- `Notas` varchar(max)
+	- `Id` uniqueidentifier
 
 ### `Departamentos`
-* **Propósito:** Catálogo de departamentos de Colombia.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Codigo`, `PaisFK`.
+* **Propósito:** Lista de departamentos/provincias del país usados para direccionamiento.
+* **Campos:**
+	- `Nombre` varchar(500)
+	- `Codigo` varchar(10)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `PaisFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `DetallesClasificacionesCentrosCostos`
-* **Propósito:** Define los detalles y porcentajes de distribución para una clasificación de centro de costos.
-* **Campos Clave:** `Id` (PK), `ClasificacionCCFK`, `CentroCostosFK`, `Porcentaje`, `CuentaFK`.
+* **Propósito:** Detalle de la clasificación de centros de costos y sus cuentas asociadas.
+* **Campos:**
+	- `ClasificacionCCFK` uniqueidentifier
+	- `CentroCostosFK` uniqueidentifier
+	- `Porcentaje` decimal(19,3)
+	- `CuentaFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `DetallesClasificacionesConceptos`
-* **Propósito:** Proporciona los detalles de una clasificación de concepto, incluyendo palabras clave para el reconocimiento.
-* **Campos Clave:** `Id` (PK), `ClasificacionFK`, `Nombre`, `TipoConcepto`, `PalabrasClaves`.
+* **Propósito:** Descripciones y metadatos para las clasificaciones de conceptos contables.
+* **Campos:**
+	- `ClasificacionFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Nombre` varchar(500)
+	- `TipoConcepto` varchar(100)
+	- `PalabrasClaves` varchar(1000)
+	- `Id` uniqueidentifier
+
+### `DetallesFacturasRecibidasDianxAsignaciones`
+* **Propósito:** Registra asignaciones y trazabilidad de facturas DIAN a usuarios para gestión.
+* **Campos:**
+	- `FacturaFK` uniqueidentifier
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `UsuarioFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `DetallesImpuestos`
-* **Propósito:** Configuración detallada de los impuestos para cada cliente, incluyendo cuentas contables asociadas.
-* **Campos Clave:** `Id` (PK), `ImpuestoFK`, `ClienteFK`, `CuentaFK`, `MayorValor`, `DiscriminaSyB`.
+* **Propósito:** Configuración detallada de impuestos y cuentas contables relacionadas.
+* **Campos:**
+	- `ImpuestoFK` uniqueidentifier
+	- `Nombre` varchar(500)
+	- `CodigoContable` varchar(100)
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `ClienteFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `MayorValor` bit
+	- `DiscriminaSyB` bit
+	- `CuentaServicioFK` uniqueidentifier
+	- `CuentaBienFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `DetallesProveedores`
-* **Propósito:** Define rangos y configuraciones específicas de usuarios para la gestión de proveedores.
-* **Campos Clave:** `Id` (PK), `UsuarioFK`, `ProveedorFK`, `ClienteFK`, `RangoMinimo`, `RangoMaximo`.
+* **Propósito:** Información adicional y reglas específicas aplicables a proveedores.
+* **Campos:**
+	- `UsuarioFK` uniqueidentifier
+	- `RangoMaximo` decimal(10,2)
+	- `ProveedorFK` uniqueidentifier
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `ClienteFK` uniqueidentifier
+	- `RangoMinimo` decimal(10,2)
+	- `Id` uniqueidentifier
 
 ### `FacturasRecibidasDian`
-* **Propósito:** Registra las facturas electrónicas recibidas directamente de la DIAN o a través del proveedor tecnológico.
-* **Campos Clave:** `Id` (PK), `Cufe`, `NombreEmisor`, `NitEmisor`, `Numero`, `FechaEmision`, `Valor`, `Estado`, `Causada`, `ClienteFK`, `ProveedorFK`.
-
-### `ImportsAuxiliar`
-* **Propósito:** Tabla auxiliar para la importación temporal de datos.
-* **Campos Clave:** `Id` (PK), `Json` (Almacena el JSON a importar).
+* **Propósito:** Representa facturas recibidas desde la DIAN con su estado, importes y metadatos.
+* **Campos:**
+	- `Cufe` varchar(300)
+	- `NombreEmisor` varchar(1000)
+	- `NitEmisor` varchar(20)
+	- `FechaVencimiento` datetime2
+	- `Estado` varchar(100)
+	- `Valor` decimal(19,3)
+	- `FechaEmision` datetime2
+	- `Iva` decimal(19,3)
+	- `FechaModificacion` datetime2
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `ClienteFK` uniqueidentifier
+	- `PdfBase` varchar(max)
+	- `UsuarioAsignadoFK` uniqueidentifier
+	- `Numero` varchar(100)
+	- `Causada` bit
+	- `Prefijo` varchar(100)
+	- `Folio` varchar(100)
+	- `CufeXMLFK` uniqueidentifier
+	- `MotivoRechazoFK` uniqueidentifier
+	- `FechaRechazo` datetime2
+	- `UsuarioRechazoFK` uniqueidentifier
+	- `Ica` decimal(10,2)
+	- `Ic` decimal(10,2)
+	- `Inc` decimal(10,2)
+	- `Timbre` decimal(10,2)
+	- `IncBolsas` decimal(10,2)
+	- `InCarbono` decimal(10,2)
+	- `InCombustibles` decimal(10,2)
+	- `IcDatos` decimal(10,2)
+	- `Icl` decimal(10,2)
+	- `Inpp` decimal(10,2)
+	- `Ibua` decimal(10,2)
+	- `Icui` decimal(10,2)
+	- `ReteIva` decimal(10,2)
+	- `ReteRenta` decimal(10,2)
+	- `ReteIca` decimal(10,2)
+	- `UsuarioAprobacionFK` uniqueidentifier
+	- `FechaAprobacion` datetime2
+	- `ProveedorFK` uniqueidentifier
+	- `CuentaPorPagarFK` uniqueidentifier
+	- `CentroCostos` bit
+	- `Pagada` bit
+	- `ValorPagado` decimal(19,3)
+	- `RetencionAsumida` bit
+	- `ValorAPagar` decimal(19,3)
+	- `FechaVencimientoAprobacion` datetime2
+	- `Auxiliar` varchar(max)
+	- `FormaPago` varchar(100)
+	- `MayorGasto` bit
+	- `NoDeducible` bit
+	- `Id` uniqueidentifier
 
 ### `Impuestos`
-* **Propósito:** Catálogo de impuestos generales (IVA, ICA, etc.).
-* **Campos Clave:** `Id` (PK), `Nombre`, `Codigo`, `Porcentaje`.
+* **Propósito:** Catálogo general de impuestos usados en los cálculos y causaciones.
+* **Campos:**
+	- `Nombre` varchar(500)
+	- `Codigo` varchar(100)
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `CodigoContable` varchar(100)
+	- `Porcentaje` varchar(100)
+	- `Id` uniqueidentifier
 
 ### `ImpuestosICA`
-* **Propósito:** Define las tarifas y bases de Impuesto de Industria y Comercio (ICA) por municipio.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Porcentaje`, `Base`, `MunicipioFK`.
+* **Propósito:** Configuración de impuestos ICA por municipio y sus porcentajes.
+* **Campos:**
+	- `Nombre` varchar(250)
+	- `Base` decimal(19,3)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Descripcion` varchar(500)
+	- `Porcentaje` decimal(19,3)
+	- `MunicipioFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `ImpuestosICAxClientes`
-* **Propósito:** Asocia los impuestos ICA a los clientes, con la cuenta contable correspondiente.
-* **Campos Clave:** `Id` (PK), `ICAFK`, `ClienteFK`, `CuentaFK`.
+* **Propósito:** Asocia impuestos ICA específicos a clientes y cuentas contables.
+* **Campos:**
+	- `ICAFK` uniqueidentifier
+	- `ClienteFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `ItemCufeXMLAllowanceCharges`
-* **Propósito:** Detalles de descuentos o cargos aplicados a ítems específicos dentro del XML CUFE.
-* **Campos Clave:** `Id` (PK), `ItemCufeXMLFK`, `AllowanceChargeReason`, `Amount`, `ChargeIndicator`.
+* **Propósito:** Detalle de cargos y descuentos aplicados a ítems dentro del CUFE XML.
+* **Campos:**
+	- `ItemId` varchar(100)
+	- `AllowanceChargeReason` varchar(5000)
+	- `AmountCurrency` varchar(10)
+	- `BaseAmountCurrency` varchar(10)
+	- `ItemCufeXMLFK` uniqueidentifier
+	- `ChargeIndicator` bit
+	- `MultiplierFactorNumeric` decimal(19,3)
+	- `Amount` decimal(19,3)
+	- `BaseAmount` decimal(19,3)
+	- `Id` uniqueidentifier
 
 ### `ItemCufeXMLTaxSubtotals`
-* **Propósito:** Subtotales de impuestos para cada ítem de una factura, como se detalla en el XML CUFE.
-* **Campos Clave:** `Id` (PK), `ItemCufeXMLTaxFK`, `TaxSchemeName`, `TaxableAmount`, `TaxAmount`, `NumPercent`.
+* **Propósito:** Subtotales de impuestos por ítem dentro del CUFE XML.
+* **Campos:**
+	- `ItemCufeXMLTaxFK` uniqueidentifier
+	- `TaxableAmountCurrency` varchar(10)
+	- `TaxAmountCurrency` varchar(10)
+	- `TaxSchemeID` varchar(10)
+	- `TaxSchemeName` varchar(30)
+	- `TaxableAmount` decimal(19,3)
+	- `TaxAmount` decimal(19,3)
+	- `NumPercent` decimal(19,3)
+	- `Id` uniqueidentifier
 
 ### `ItemCufeXMLTaxes`
-* **Propósito:** Resumen de los impuestos aplicados a un ítem del XML CUFE.
-* **Campos Clave:** `Id` (PK), `ItemCufeXMLFK`, `TaxAmount`, `RoundingAmount`.
+* **Propósito:** Impuestos específicos asociados a ítems del CUFE XML.
+* **Campos:**
+	- `ItemCufeXMLFK` uniqueidentifier
+	- `TaxAmountCurrency` varchar(10)
+	- `RoundingAmountCurrency` varchar(10)
+	- `TaxAmount` decimal(14,2)
+	- `RoundingAmount` decimal(14,2)
+	- `Id` uniqueidentifier
 
 ### `ItemsCufeXML`
-* **Propósito:** Almacena la información de cada ítem (producto/servicio) de una factura electrónica extraída del XML CUFE.
-* **Campos Clave:** `Id` (PK), `CufeXMLFK`, `ItemId`, `Description`, `InvoicedQuantity`, `LineExtensionAmount`, `ClasificacionFK`, `ConceptoFK`.
+* **Propósito:** Ítems (líneas) de facturas almacenadas dentro del CUFE XML con sus metadatos.
+* **Campos:**
+	- `CufeXMLFK` uniqueidentifier
+	- `ItemId` varchar(100)
+	- `InvoiceQuantityUnitCode` varchar(10)
+	- `LineExtensionAmountCurrency` varchar(10)
+	- `FreeOfChargeIndicator` bit
+	- `Description` varchar(1000)
+	- `PriceAmountCurrency` varchar(10)
+	- `BaseQuantityUnitCode` varchar(100)
+	- `ClasificacionFK` uniqueidentifier
+	- `CuentaK` uniqueidentifier
+	- `ConceptoFK` uniqueidentifier
+	- `CuentaNueva` bit
+	- `InvoicedQuantity` decimal(19,3)
+	- `LineExtensionAmount` decimal(19,3)
+	- `PriceAmount` decimal(19,3)
+	- `BaseQuantity` decimal(19,3)
+	- `TipoConcepto` varchar(100)
+	- `PalabrasClaves` varchar(1000)
+	- `Id` uniqueidentifier
+
+### `Modulos`
+* **Propósito:** Catálogo de módulos/aplicaciones disponibles en el sistema.
+* **Campos:**
+	- `Nombre` varchar(100)
+	- `Logo` varchar(max)
+	- `Descripcion` varchar(500)
+	- `IdMenu` varchar(100)
+	- `Id` uniqueidentifier
 
 ### `MotivosRechazoFacturas`
-* **Propósito:** Catálogo de motivos predefinidos para el rechazo de facturas.
-* **Campos Clave:** `Id` (PK), `Codigo`, `Nombre`.
+* **Propósito:** Lista de motivos de rechazo para facturas recibidas de la DIAN.
+* **Campos:**
+	- `Codigo` varchar(100)
+	- `Nombre` varchar(100)
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `MovimientosSistemas`
-* **Propósito:** Registra los tipos de movimientos contables o de sistema que pueden ser configurados por el cliente.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Campos` (JSON para configuración de campos).
+* **Propósito:** Registro de tipos de movimientos o eventos del sistema para auditoría.
+* **Campos:**
+	- `Nombre` varchar(250)
+	- `Campos` varchar(max)
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `Municipios`
-* **Propósito:** Catálogo de municipios de Colombia.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Codigo`, `DepartamentoFK`.
+* **Propósito:** Catálogo de municipios, enlazados a departamentos y usados en direcciones.
+* **Campos:**
+	- `Nombre` varchar(500)
+	- `Codigo` varchar(10)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `DepartamentoFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `Paises`
-* **Propósito:** Catálogo de países.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Codigo`.
+* **Propósito:** Catálogo de países para datos geográficos y direccionamiento.
+* **Campos:**
+	- `Nombre` varchar(100)
+	- `Codigo` varchar(100)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `PlandeCuentas`
-* **Propósito:** Almacena el plan de cuentas contable de cada cliente.
-* **Campos Clave:** `Id` (PK), `Nombre`, `NumCuenta`, `ClienteFK`, `CuentaAuxiliar`.
+* **Propósito:** Plan de cuentas contables asociado a clientes y su estructura.
+* **Campos:**
+	- `Nombre` varchar(100)
+	- `NumCuenta` varchar(100)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Descripcion` varchar(500)
+	- `ClienteFK` uniqueidentifier
+	- `CuentaOperador` varchar(100)
+	- `CuentaAuxiliar` bit
+	- `Id` uniqueidentifier
 
 ### `Proveedores`
-* **Propósito:** Gestiona la información de los proveedores de cada cliente, incluyendo datos fiscales y configuraciones de retención.
-* **Campos Clave:** `Id` (PK), `NumeroDocumento`, `RazonSocial`, `ClienteFK`, `Estado`, `AplicaRango`, `Autoretenedor`, `CuentaPorPagarFK`, `ConceptoFK`, `ICAFK`.
+* **Propósito:** Registro maestro de proveedores con datos legales y contables.
+* **Campos:**
+	- `TipoOrganizacionFK` uniqueidentifier
+	- `TipoDocumentoFK` uniqueidentifier
+	- `NumeroDocumento` varchar(100)
+	- `RazonSocial` varchar(250)
+	- `ActividadEconomicaFK` uniqueidentifier
+	- `Direccion` varchar(100)
+	- `CodigoPostalFK` uniqueidentifier
+	- `TelefonoPrincipal` varchar(100)
+	- `TelefonoAlterntivo` varchar(100)
+	- `Correo` varchar(100)
+	- `TipoDocumentoRepresentanteFK` uniqueidentifier
+	- `NumeroDocumentoRepresentante` varchar(100)
+	- `NombreCompletoRepresentante` varchar(250)
+	- `PepRepresentante` bit
+	- `CorreoRepresentante` varchar(100)
+	- `TelefonoRepresentante` varchar(100)
+	- `ClienteFK` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `Estado` varchar(100)
+	- `AplicaRango` bit
+	- `RFMayorValorFacturado` bit
+	- `RFMayorTarifa` bit
+	- `RFConBase` bit
+	- `RFSinBase` bit
+	- `CausarTotales` bit
+	- `Pensionado` bit
+	- `InteresesVivienda` bit
+	- `FechaVigenciaIntereses` datetime2
+	- `ValorIntereses` decimal(10,2)
+	- `Dependientes` bit
+	- `ValorDependientes` decimal(10,2)
+	- `FechaVigenciaPolizaSalud` datetime2
+	- `ValorPolizaSalud` decimal(10,2)
+	- `PolizaSalud` bit
+	- `CuentaPorPagarFK` uniqueidentifier
+	- `ConceptoFK` uniqueidentifier
+	- `CuentaFK` uniqueidentifier
+	- `ReteIvaConBase` bit
+	- `ReteIvaSinBase` bit
+	- `RST` bit
+	- `ICAFK` uniqueidentifier
+	- `MunicipioFK` uniqueidentifier
+	- `ClasificacionCCFK` uniqueidentifier
+	- `ImpuestoMayorValor` bit
+	- `Autoretenedor` bit
+	- `Id` uniqueidentifier
 
 ### `ResponsabilidadesFiscales`
-* **Propósito:** Catálogo de responsabilidades fiscales de la DIAN.
-* **Campos Clave:** `Id` (PK), `Codigo`, `Nombre`.
+* **Propósito:** Catálogo de responsabilidades fiscales aplicables a terceros.
+* **Campos:**
+	- `Nombre` varchar(1000)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Codigo` varchar(10)
+	- `PalabrasClave` varchar(500)
+	- `Id` uniqueidentifier
 
 ### `ResponsabilidadesFiscalesClientes`
-* **Propósito:** Asocia las responsabilidades fiscales a cada cliente.
-* **Campos Clave:** `Id` (PK), `ClienteFK`, `ResposabilidadFiscalFK`.
+* **Propósito:** Asocia responsabilidades fiscales específicas a clientes.
+* **Campos:**
+	- `ClienteFK` uniqueidentifier
+	- `ResposabilidadFiscalFK` uniqueidentifier
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `ResponsabilidadesFiscalesProveedores`
-* **Propósito:** Asocia las responsabilidades fiscales a cada proveedor.
-* **Campos Clave:** `Id` (PK), `ProveedorFK`, `ResposabilidadFiscalFK`.
+* **Propósito:** Asocia responsabilidades fiscales específicas a proveedores.
+* **Campos:**
+	- `ProveedorFK` uniqueidentifier
+	- `ResposabilidadFiscalFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacionFK` uniqueidentifier
+	- `UsuarioModificacionFK` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `ResponsabilidadesReteIva`
-* **Propósito:** Define las reglas de aplicación de retención de IVA basadas en las responsabilidades fiscales del cliente y proveedor.
-* **Campos Clave:** `Id` (PK), `ResponsabilidadClienteFK`, `ResponsabilidadProveedorFK`.
+* **Propósito:** Configuración de responsabilidades relacionadas con retenciones de IVA.
+* **Campos:**
+	- `ResponsabilidadClienteFK` uniqueidentifier
+	- `ResponsabilidadProveedorFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `ResponsabilidadesRetencion`
-* **Propósito:** Define las reglas de aplicación de retención en la fuente basadas en las responsabilidades fiscales del cliente y proveedor.
-* **Campos Clave:** `Id` (PK), `ResponsabilidadClienteFK`, `ResponsabilidadProveedorFK`.
+* **Propósito:** Configura responsabilidades relacionadas con retenciones en general.
+* **Campos:**
+	- `ResponsabilidadClienteFK` uniqueidentifier
+	- `ResponsabilidadProveedorFK` uniqueidentifier
+	- `Descripcion` varchar(500)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
+
+### `Roles`
+* **Propósito:** Define roles de usuario dentro del sistema y su módulo asociado.
+* **Campos:**
+	- `Nombre` nvarchar(200)
+	- `ModuloFK` uniqueidentifier
+	- `Id` uniqueidentifier
+
+### `RolesxUsuarios`
+* **Propósito:** Asociación de roles a usuarios (mapeo many-to-many).
+* **Campos:**
+	- `UsuarioId` uniqueidentifier
+	- `RoleId` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `Terceros`
-* **Propósito:** Registro de terceros involucrados en transacciones, distintos de clientes y proveedores.
-* **Campos Clave:** `Id` (PK), `ClienteFK`, `Nombre`, `NumeroDocumento`, `Email`.
+* **Propósito:** Entidades externas (terceros) relacionadas a clientes para diversas operaciones.
+* **Campos:**
+	- `ClienteFK` uniqueidentifier
+	- `Nombre` varchar(500)
+	- `TipoDocumentoFK` uniqueidentifier
+	- `NumeroDocumento` varchar(100)
+	- `Celular` varchar(100)
+	- `Email` varchar(300)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Id` uniqueidentifier
 
 ### `TiposDocumentos`
-* **Propósito:** Catálogo de tipos de documentos de identificación (CC, NIT, CE, etc.).
-* **Campos Clave:** `Id` (PK), `Codigo`, `Nombre`.
+* **Propósito:** Catálogo de tipos de documentos identificativos usados por terceros.
+* **Campos:**
+	- `Nombre` varchar(200)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Codigo` varchar(100)
+	- `TipoOrganizacionFK` uniqueidentifier
+	- `Id` uniqueidentifier
 
 ### `TiposOrganizaciones`
-* **Propósito:** Catálogo de tipos de organización (Persona Natural, Persona Jurídica, etc.).
-* **Campos Clave:** `Id` (PK), `Codigo`, `Nombre`.
+* **Propósito:** Clasificación de tipos de organizaciones (ej. empresa, persona natural).
+* **Campos:**
+	- `Nombre` varchar(200)
+	- `Codigo` varchar(10)
+	- `Descripcion` varchar(max)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Tipo` varchar(100)
+	- `Id` uniqueidentifier
 
 ### `TrazabilidadesCausaciones`
-* **Propósito:** Registra el historial de cambios y aprobaciones de cada causación.
-* **Campos Clave:** `Id` (PK), `CausacionFK`, `UsuarioFK`, `Fecha`, `Cambios` (Descripción del cambio).
+* **Propósito:** Registra la trazabilidad y cambios sobre causaciones contables.
+* **Campos:**
+	- `CausacionFK` uniqueidentifier
+	- `UsuarioFK` uniqueidentifier
+	- `Fecha` datetime2
+	- `Cambios` varchar(max)
+	- `Id` uniqueidentifier
 
 ### `Usuarios`
-* **Propósito:** Almacena la información de los usuarios que acceden al sistema.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Apellidos`, `Correo`, `Identificacion`, `ClienteFK`.
+* **Propósito:** Tabla principal de usuarios del sistema con credenciales y metadatos.
+* **Campos:**
+	- `Nombre` varchar(200)
+	- `Apellidos` varchar(200)
+	- `Identificacion` varchar(200)
+	- `Clave` varchar(200)
+	- `Correo` varchar(300)
+	- `Foto` varchar(max)
+	- `ClienteFK` uniqueidentifier
+	- `CierreMes` varchar(100)
+	- `Id` uniqueidentifier
 
 ### `UsuariosxClientes`
-* **Propósito:** Relaciona a los usuarios con los clientes a los que tienen acceso.
-* **Campos Clave:** `Id` (PK), `ClienteFK`, `UsuarioFK`.
+* **Propósito:** Relaciona usuarios con clientes específicos y su contexto operativo.
+* **Campos:**
+	- `ClienteFK` uniqueidentifier
+	- `UsuarioFK` uniqueidentifier
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Descripcion` varchar(500)
+	- `Id` uniqueidentifier
 
 ### `Variables`
-* **Propósito:** Permite almacenar variables de configuración del sistema que pueden variar anualmente o por configuración.
-* **Campos Clave:** `Id` (PK), `Nombre`, `Anio`, `Valor`.
+* **Propósito:** Valores y parámetros configurables por año o cliente utilizados en cálculos.
+* **Campos:**
+	- `Nombre` varchar(100)
+	- `Anio` varchar(100)
+	- `UsuarioCreacion` uniqueidentifier
+	- `UsuarioModificacion` uniqueidentifier
+	- `FechaCreacion` datetime2
+	- `FechaModificacion` datetime2
+	- `Descripcion` varchar(500)
+	- `Valor` decimal(10,2)
+	- `Id` uniqueidentifier
+
+### Relaciones entre tablas (FKs)
+
+```
+AplicacionesxUsuarios --> Modulos : ModuloFKID
+
+AplicacionesxUsuarios --> Usuarios : UsuarioFKID
+
+Causaciones --> CentrosCostos : CentroCostosFKID
+
+Causaciones --> ClasificacionesConceptos : ClasificacionFKID
+
+Causaciones --> ConceptosRetencion : ConceptoFKID
+
+Causaciones --> CufesXML : CufeXMLFKID
+
+Causaciones --> FacturasRecibidasDian : FacturaFKID
+
+Causaciones --> Impuestos : ImpuestoFKID
+
+Causaciones --> ItemsCufeXML : ItemCufeXMLFKID
+
+Causaciones --> PlandeCuentas : CuentaFKID
+
+Causaciones --> Proveedores : ProveedorFKID
+
+Causaciones --> Terceros : TerceroFKID
+
+CausacionesOriginales --> CentrosCostos : CentroCostosFKID
+
+CausacionesOriginales --> ClasificacionesConceptos : ClasificacionFKID
+
+CausacionesOriginales --> ConceptosRetencion : ConceptoFKID
+
+CausacionesOriginales --> CufesXML : CufeXMLFKID
+
+CausacionesOriginales --> FacturasRecibidasDian : FacturaFKID
+
+CausacionesOriginales --> PlandeCuentas : CuentaFKID
+
+CausacionesOriginales --> Proveedores : ProveedorFKID
+
+CentrosCostos --> Clientes : ClienteFKID
+
+CentrosCostosxfacturas --> CentrosCostos : CentroCostosFKID
+
+CentrosCostosxfacturas --> ClasificacionesCentrosCostos : ClasificacionCCFKID
+
+CentrosCostosxfacturas --> FacturasRecibidasDian : FacturaFKID
+
+CentrosCostosxfacturas --> PlandeCuentas : CuentaFKID
+
+CierresMeses --> Clientes : ClienteFKID
+
+ClasificacionesCentrosCostos --> Clientes : ClienteFKID
+
+ClasificacionesConceptos --> Clientes : ClienteFKID
+
+ClasificacionesConceptos --> ConceptosRetencion : ConceptoFKID
+
+ClasificacionesConceptos --> PlandeCuentas : CuentaReteIvaFKID
+
+ClasificacionesConceptos --> PlandeCuentas : CuentaFKID
+
+ClasificacionesConceptos --> Proveedores : ProveedorFKID
+
+Clientes --> ActividadesEconomicas : ActividadEconomicaFKID
+
+Clientes --> CodigosPostales : CodigoPostalFKID
+
+Clientes --> MovimientosSistemas : MovimientoSistemaFKID
+
+Clientes --> TiposDocumentos : TipoDocumentoFKID
+
+Clientes --> TiposDocumentos : TipoDocumentoRepresentanteFKID
+
+Clientes --> TiposOrganizaciones : TipoOrganizacionFKID
+
+CodigosPostales --> Municipios : MunicipioFKID
+
+ConceptosRetencionxClientes --> Clientes : ClienteFKID
+
+ConceptosRetencionxClientes --> ConceptosRetencion : ConceptoFKID
+
+ConceptosRetencionxClientes --> PlandeCuentas : CuentaFKID
+
+ConceptosRetencionxClientes --> PlandeCuentas : CuentaNoDeclaranteFKID
+
+ConceptosRetencionxClientes --> PlandeCuentas : CuentaReteIvaFKID
+
+Departamentos --> Paises : PaisFKID
+
+DetallesClasificacionesCentrosCostos --> CentrosCostos : CentroCostosFKID
+
+DetallesClasificacionesCentrosCostos --> ClasificacionesCentrosCostos : ClasificacionCCFKID
+
+DetallesClasificacionesCentrosCostos --> PlandeCuentas : CuentaFKID
+
+DetallesClasificacionesConceptos --> ClasificacionesConceptos : ClasificacionFKID
+
+DetallesFacturasRecibidasDianxAsignaciones --> FacturasRecibidasDian : FacturaFKID
+
+DetallesFacturasRecibidasDianxAsignaciones --> Usuarios : UsuarioFKID
+
+DetallesImpuestos --> Clientes : ClienteFKID
+
+DetallesImpuestos --> Impuestos : ImpuestoFKID
+
+DetallesImpuestos --> PlandeCuentas : CuentaServicioFKID
+
+DetallesImpuestos --> PlandeCuentas : CuentaBienFKID
+
+DetallesImpuestos --> PlandeCuentas : CuentaFKID
+
+DetallesProveedores --> Clientes : ClienteFKID
+
+DetallesProveedores --> Proveedores : ProveedorFKID
+
+DetallesProveedores --> Usuarios : UsuarioFKID
+
+FacturasRecibidasDian --> Clientes : ClienteFKID
+
+FacturasRecibidasDian --> CufesXML : CufeXMLFKID
+
+FacturasRecibidasDian --> MotivosRechazoFacturas : MotivoRechazoFKID
+
+FacturasRecibidasDian --> PlandeCuentas : CuentaPorPagarFKID
+
+FacturasRecibidasDian --> Proveedores : ProveedorFKID
+
+FacturasRecibidasDian --> Usuarios : UsuarioAsignadoFKID
+
+FacturasRecibidasDian --> Usuarios : UsuarioRechazoFKID
+
+FacturasRecibidasDian --> Usuarios : UsuarioAprobacionFKID
+
+ImpuestosICA --> Municipios : MunicipioFKID
+
+ImpuestosICAxClientes --> Clientes : ClienteFKID
+
+ImpuestosICAxClientes --> ImpuestosICA : ICAFKID
+
+ImpuestosICAxClientes --> PlandeCuentas : CuentaFKID
+
+ItemCufeXMLAllowanceCharges --> ItemsCufeXML : ItemCufeXMLFKID
+
+ItemCufeXMLTaxSubtotals --> ItemCufeXMLTaxes : ItemCufeXMLTaxFKID
+
+ItemCufeXMLTaxes --> ItemsCufeXML : ItemCufeXMLFKID
+
+ItemsCufeXML --> ClasificacionesConceptos : ClasificacionFKID
+
+ItemsCufeXML --> ConceptosRetencion : ConceptoFKID
+
+ItemsCufeXML --> CufesXML : CufeXMLFKID
+
+ItemsCufeXML --> PlandeCuentas : CuentaKID
+
+Municipios --> Departamentos : DepartamentoFKID
+
+PlandeCuentas --> Clientes : ClienteFKID
+
+Proveedores --> ActividadesEconomicas : ActividadEconomicaFKID
+
+Proveedores --> ClasificacionesCentrosCostos : ClasificacionCCFKID
+
+Proveedores --> Clientes : ClienteFKID
+
+Proveedores --> CodigosPostales : CodigoPostalFKID
+
+Proveedores --> ConceptosRetencion : ConceptoFKID
+
+Proveedores --> ImpuestosICA : ICAFKID
+
+Proveedores --> Municipios : MunicipioFKID
+
+Proveedores --> PlandeCuentas : CuentaFKID
+
+Proveedores --> PlandeCuentas : CuentaPorPagarFKID
+
+Proveedores --> TiposDocumentos : TipoDocumentoFKID
+
+Proveedores --> TiposDocumentos : TipoDocumentoRepresentanteFKID
+
+Proveedores --> TiposOrganizaciones : TipoOrganizacionFKID
+
+ResponsabilidadesFiscalesClientes --> Clientes : ClienteFKID
+
+ResponsabilidadesFiscalesClientes --> ResponsabilidadesFiscales : ResposabilidadFiscalFKID
+
+ResponsabilidadesFiscalesProveedores --> Proveedores : ProveedorFKID
+
+ResponsabilidadesFiscalesProveedores --> ResponsabilidadesFiscales : ResposabilidadFiscalFKID
+
+ResponsabilidadesReteIva --> ResponsabilidadesFiscales : ResponsabilidadClienteFKID
+
+ResponsabilidadesReteIva --> ResponsabilidadesFiscales : ResponsabilidadProveedorFKID
+
+ResponsabilidadesRetencion --> ResponsabilidadesFiscales : ResponsabilidadProveedorFKID
+
+ResponsabilidadesRetencion --> ResponsabilidadesFiscales : ResponsabilidadClienteFKID
+
+Roles --> Modulos : ModuloFKID
+
+RolesxUsuarios --> Roles : RoleIdID
+
+RolesxUsuarios --> Usuarios : UsuarioIdID
+
+Terceros --> Clientes : ClienteFKID
+
+Terceros --> TiposDocumentos : TipoDocumentoFKID
+
+TrazabilidadesCausaciones --> Causaciones : CausacionFKID
+
+TrazabilidadesCausaciones --> Usuarios : UsuarioFKID
+
+Usuarios --> Clientes : ClienteFKID
+
+UsuariosxClientes --> Clientes : ClienteFKID
+
+UsuariosxClientes --> Usuarios : UsuarioFKID
+```
 
 ## Módulo CRM (Gestión de Relación con el Cliente)
 
