@@ -13,6 +13,3 @@ En el entorno regulatorio colombiano, la gestión de facturas electrónicas reci
 * **Recepción y Acuse:** Automatiza la descarga de facturas de la DIAN y el proceso de acuse, que es un requisito legal.
 * **Causación Inteligente:** Implementa un motor de causación que aplica las reglas de la DIAN para identificar y discriminar retenciones (ReteFuente, ReteIVA, ReteICA), impuestos y otras consideraciones contables.
 * **Eficiencia Operativa:** Reduce la intervención manual, minimizando errores y acelerando los procesos contables de las facturas de proveedores.
-
-**Audiencia:**
-Esta sección está dirigida a todos los interesados en comprender el propósito general y el alcance de Qonta, incluyendo stakeholders, gerencia, nuevos miembros del equipo y desarrolladores.

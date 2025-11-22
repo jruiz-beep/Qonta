@@ -4,22 +4,12 @@ on:
   push:
     branches: [ main ]
 
-# Permisos necesarios para que el action pueda crear la rama gh-pages y subir contenido
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          # persist-credentials must be true so subsequent git push uses GITHUB_TOKEN
-          persist-credentials: true
-          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -33,12 +23,6 @@ jobs:
 
       - name: Build site
         run: mkdocs build --site-dir site
-
-      - name: Debug: list generated site files
-        run: |
-          echo "Listing site/ (top 200 entries)"
-          ls -la site || true
-          find site -maxdepth 3 -type f | sed -n '1,200p' || true
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

@@ -9,126 +9,81 @@ Para facilitar la comprensión, el modelo de datos se ha dividido en los siguien
 ### 1. Módulo de Facturación y Causación
 
 Este diagrama muestra las entidades centrales del proceso de recepción, aprobación y contabilización de facturas.
-
 ``` mermaid
     classDiagram
     direction LR
-    class FacturasRecibidasDian {
-        varchar(300) Cufe
-        varchar(100) Estado
-        decimal(19,3) Valor
-        datetime2 FechaEmision
-        datetime2 FechaVencimiento
-        uniqueidentifier ClienteFK
-        uniqueidentifier ProveedorFK
-        uniqueidentifier UsuarioAsignadoFK
-        bit Causada
-        bit Pagada
-        uniqueidentifier Id
-    }
-    class CufesXML {
-        varchar(100) NumeroFactura
-        datetime2 FechaEmision
-        varchar(1000) CUFE
-        decimal(19,3) ValorTotal
-        uniqueidentifier Id
-    }
-    class ItemsCufeXML {
-        uniqueidentifier CufeXMLFK
-        varchar(1000) Description
-        decimal(19,3) LineExtensionAmount
-        uniqueidentifier ClasificacionFK
-        uniqueidentifier CuentaK
-        uniqueidentifier Id
-    }
-    class Causaciones {
-        uniqueidentifier FacturaFK
-        uniqueidentifier ItemCufeXMLFK
-        uniqueidentifier CuentaFK
-        decimal(10,2) Debito
-        decimal(10,2) Credito
-        uniqueidentifier CentroCostosFK
-        datetime2 Fecha
-        uniqueidentifier Id
-    }
-    class TrazabilidadesCausaciones {
-        uniqueidentifier CausacionFK
-        uniqueidentifier UsuarioFK
-        datetime2 Fecha
-        varchar(max) Cambios
-        uniqueidentifier Id
-    }
-    class CentrosCostos {
-        varchar(100) Nombre
-        varchar(100) Codigo
-        uniqueidentifier ClienteFK
-        uniqueidentifier Id
-    }
+    %% Módulo 1: sólo nombres de tablas y campos de relación
+    class FacturasRecibidasDian { uniqueidentifier Id\nuniqueidentifier CufeXMLFK\nuniqueidentifier ClienteFK\nuniqueidentifier ProveedorFK }
+    class CufesXML { uniqueidentifier Id }
+    class ItemsCufeXML { uniqueidentifier Id\nuniqueidentifier CufeXMLFK }
+    class ItemCufeXMLAllowanceCharges { uniqueidentifier Id\nuniqueidentifier ItemCufeXMLFK }
+    class ItemCufeXMLTaxes { uniqueidentifier Id\nuniqueidentifier ItemCufeXMLFK }
+    class ItemCufeXMLTaxSubtotals { uniqueidentifier Id\nuniqueidentifier ItemCufeXMLTaxFK }
+    class Causaciones { uniqueidentifier Id\nuniqueidentifier FacturaFK\nuniqueidentifier ItemCufeXMLFK\nuniqueidentifier CuentaFK\nuniqueidentifier CentroCostosFK }
+    class CausacionesOriginales { uniqueidentifier Id\nuniqueidentifier FacturaFK }
+    class CentrosCostosxfacturas { uniqueidentifier Id\nuniqueidentifier FacturaFK\nuniqueidentifier CentroCostosFK }
+    class TrazabilidadesCausaciones { uniqueidentifier Id\nuniqueidentifier CausacionFK\nuniqueidentifier UsuarioFK }
+    class DetallesFacturasRecibidasDianxAsignaciones { uniqueidentifier Id\nuniqueidentifier FacturaFK\nuniqueidentifier UsuarioFK }
 
-    FacturasRecibidasDian --> CufesXML : CufeXMLFKID
-    FacturasRecibidasDian --> Proveedores : ProveedorFKID
-    FacturasRecibidasDian --> Clientes : ClienteFKID
-    ItemsCufeXML --> CufesXML : CufeXMLFKID
-    Causaciones --> FacturasRecibidasDian : FacturaFKID
-    Causaciones --> ItemsCufeXML : ItemCufeXMLFKID
-    Causaciones --> PlandeCuentas : CuentaFKID
-    Causaciones --> CentrosCostos : CentroCostosFKID
-    TrazabilidadesCausaciones --> Causaciones : CausacionFKID
-    TrazabilidadesCausaciones --> Usuarios : UsuarioFKID
+    FacturasRecibidasDian --> CufesXML : CufeXMLFK
+    FacturasRecibidasDian --> Proveedores : ProveedorFK
+    FacturasRecibidasDian --> Clientes : ClienteFK
+    ItemsCufeXML --> CufesXML : CufeXMLFK
+    ItemCufeXMLAllowanceCharges --> ItemsCufeXML : ItemCufeXMLFK
+    ItemCufeXMLTaxes --> ItemsCufeXML : ItemCufeXMLFK
+    ItemCufeXMLTaxSubtotals --> ItemCufeXMLTaxes : ItemCufeXMLTaxFK
+    Causaciones --> FacturasRecibidasDian : FacturaFK
+    Causaciones --> ItemsCufeXML : ItemCufeXMLFK
+    Causaciones --> PlandeCuentas : CuentaFK
+    Causaciones --> CentrosCostos : CentroCostosFK
+    Causaciones --> Impuestos : ImpuestoFK
+    CausacionesOriginales --> FacturasRecibidasDian : FacturaFK
+    CentrosCostosxfacturas --> FacturasRecibidasDian : FacturaFK
+    CentrosCostosxfacturas --> CentrosCostos : CentroCostosFK
+    TrazabilidadesCausaciones --> Causaciones : CausacionFK
+    TrazabilidadesCausaciones --> Usuarios : UsuarioFK
+    DetallesFacturasRecibidasDianxAsignaciones --> FacturasRecibidasDian : FacturaFK
+    DetallesFacturasRecibidasDianxAsignaciones --> Usuarios : UsuarioFK
 ```
 
-### 2. Módulo de Terceros (Clientes, Proveedores y Usuarios)
+### 2. Módulo de Terceros (Clientes, Proveedores y Terceros)
 
 Este modelo representa las entidades principales que interactúan con el sistema, como clientes, proveedores y usuarios internos.
 
 ``` mermaid
     classDiagram
     direction RL
-    class Clientes {
-        varchar(100) NumeroDocumento
-        varchar(1000) RazonSocial
-        uniqueidentifier ActividadEconomicaFK
-        uniqueidentifier Id
-    }
-    class Proveedores {
-        varchar(100) NumeroDocumento
-        varchar(250) RazonSocial
-        uniqueidentifier ClienteFK
-        uniqueidentifier ActividadEconomicaFK
-        uniqueidentifier Id
-    }
-    class Usuarios {
-        varchar(200) Nombre
-        varchar(200) Apellidos
-        varchar(300) Correo
-        uniqueidentifier ClienteFK
-        uniqueidentifier Id
-    }
-    class Terceros {
-        uniqueidentifier ClienteFK
-        varchar(500) Nombre
-        varchar(100) NumeroDocumento
-        uniqueidentifier Id
-    }
-    class ActividadesEconomicas {
-        varchar(10) Codigo
-        varchar(1000) Nombre
-        uniqueidentifier Id
-    }
-    class TiposDocumentos {
-        varchar(100) Codigo
-        varchar(200) Nombre
-        uniqueidentifier Id
-    }
+    %% Módulo 2: sólo nombres de tablas y campos de relación
+    class Clientes { uniqueidentifier Id\nuniqueidentifier TipoOrganizacionFK\nuniqueidentifier TipoDocumentoFK\nuniqueidentifier ActividadEconomicaFK\nuniqueidentifier CodigoPostalFK\nuniqueidentifier TipoDocumentoRepresentanteFK\nuniqueidentifier MovimientoSistemaFK }
+    class Proveedores { uniqueidentifier Id\nuniqueidentifier TipoOrganizacionFK\nuniqueidentifier TipoDocumentoFK\nuniqueidentifier ActividadEconomicaFK\nuniqueidentifier CodigoPostalFK\nuniqueidentifier TipoDocumentoRepresentanteFK\nuniqueidentifier ClienteFK\nuniqueidentifier CuentaPorPagarFK\nuniqueidentifier ConceptoFK\nuniqueidentifier CuentaFK\nuniqueidentifier ICAFK\nuniqueidentifier MunicipioFK\nuniqueidentifier ClasificacionCCFK }
+    class Usuarios { uniqueidentifier Id\nuniqueidentifier ClienteFK }
+    class Terceros { uniqueidentifier Id\nuniqueidentifier ClienteFK\nuniqueidentifier TipoDocumentoFK }
+    class ActividadesEconomicas { uniqueidentifier Id }
+    class TiposDocumentos { uniqueidentifier Id }
+    class TiposOrganizaciones { uniqueidentifier Id }
+    class CodigosPostales { uniqueidentifier Id\nuniqueidentifier MunicipioFK }
+    class MovimientosSistemas { uniqueidentifier Id }
+    class ResponsabilidadesFiscalesProveedores { uniqueidentifier Id\nuniqueidentifier ProveedorFK\nuniqueidentifier ResposabilidadFiscalFK }
+    class DetallesProveedores { uniqueidentifier Id\nuniqueidentifier ProveedorFK\nuniqueidentifier ClienteFK\nuniqueidentifier UsuarioFK }
 
-    Proveedores --> Clientes : ClienteFKID
-    Usuarios --> Clientes : ClienteFKID
-    Terceros --> Clientes : ClienteFKID
-    Clientes --> ActividadesEconomicas : ActividadEconomicaFKID
-    Proveedores --> ActividadesEconomicas : ActividadEconomicaFKID
-    Clientes --> TiposDocumentos : TipoDocumentoFKID
-    Proveedores --> TiposDocumentos : TipoDocumentoFKID
-    Terceros --> TiposDocumentos : TipoDocumentoFKID
+    Proveedores --> Clientes : ClienteFK
+    Usuarios --> Clientes : ClienteFK
+    Terceros --> Clientes : ClienteFK
+    Clientes --> ActividadesEconomicas : ActividadEconomicaFK
+    Proveedores --> ActividadesEconomicas : ActividadEconomicaFK
+    Clientes --> TiposDocumentos : TipoDocumentoFK
+    Proveedores --> TiposDocumentos : TipoDocumentoFK
+    Terceros --> TiposDocumentos : TipoDocumentoFK
+    Clientes --> TiposOrganizaciones : TipoOrganizacionFK
+    Clientes --> CodigosPostales : CodigoPostalFK
+    Proveedores --> CodigosPostales : CodigoPostalFK
+    Clientes --> MovimientosSistemas : MovimientoSistemaFK
+    Proveedores --> Municipios : MunicipioFK
+    ResponsabilidadesFiscalesProveedores --> Proveedores : ProveedorFK
+    ResponsabilidadesFiscalesProveedores --> ResponsabilidadesFiscales : ResposabilidadFiscalFK
+    DetallesProveedores --> Proveedores : ProveedorFK
+    DetallesProveedores --> Clientes : ClienteFK
+    DetallesProveedores --> Usuarios : UsuarioFK
 ```
 
 ### 3. Módulo de Configuración Contable y Fiscal
@@ -137,178 +92,96 @@ Aquí se definen las tablas para la configuración de planes de cuentas, impuest
 
 ``` mermaid
     classDiagram
-    class PlandeCuentas {
-        varchar(100) NumCuenta
-        varchar(100) Nombre
-        uniqueidentifier ClienteFK
-        uniqueidentifier Id
-    }
-    class Impuestos {
-        varchar(100) Codigo
-        varchar(500) Nombre
-        varchar(100) Porcentaje
-        uniqueidentifier Id
-    }
-    class ConceptosRetencion {
-        varchar(100) Nombre
-        decimal(10,2) TarifaDeclarante
-        decimal(10,2) Base
-        uniqueidentifier Id
-    }
-    class ClasificacionesConceptos {
-        uniqueidentifier ProveedorFK
-        uniqueidentifier ConceptoFK
-        uniqueidentifier CuentaFK
-        uniqueidentifier ClienteFK
-        uniqueidentifier Id
-    }
-    class ImpuestosICA {
-        varchar(250) Nombre
-        decimal(19,3) Porcentaje
-        uniqueidentifier MunicipioFK
-        uniqueidentifier Id
-    }
-    class ResponsabilidadesFiscales {
-        varchar(10) Codigo
-        varchar(1000) Nombre
-        uniqueidentifier Id
-    }
+    %% Módulo 3: configuración contable y fiscal (sólo nombres y campos FK)
+    class PlandeCuentas { uniqueidentifier Id\nuniqueidentifier ClienteFK }
+    class Impuestos { uniqueidentifier Id }
+    class ConceptosRetencion { uniqueidentifier Id }
+    class ClasificacionesConceptos { uniqueidentifier Id\nuniqueidentifier ProveedorFK\nuniqueidentifier ConceptoFK\nuniqueidentifier CuentaFK\nuniqueidentifier ClienteFK }
+    class ImpuestosICA { uniqueidentifier Id\nuniqueidentifier MunicipioFK }
+    class ResponsabilidadesFiscales { uniqueidentifier Id }
+    class ActividadesEconomicas { uniqueidentifier Id }
+    class TiposOrganizaciones { uniqueidentifier Id }
+    class Paises { uniqueidentifier Id }
+    class Departamentos { uniqueidentifier Id\nuniqueidentifier PaisFK }
+    class Municipios { uniqueidentifier Id\nuniqueidentifier DepartamentoFK }
+    class CodigosPostales { uniqueidentifier Id\nuniqueidentifier MunicipioFK }
+    class ResponsabilidadesRetencion { uniqueidentifier Id }
+    class ResponsabilidadesReteIva { uniqueidentifier Id }
+    class DetallesClasificacionesConceptos { uniqueidentifier Id\nuniqueidentifier ClasificacionFK\nuniqueidentifier CuentaFK }
+    class Variables { uniqueidentifier Id }
+    class MotivosRechazoFacturas { uniqueidentifier Id }
 
-    PlandeCuentas --> Clientes : ClienteFKID
-    ClasificacionesConceptos --> Clientes : ClienteFKID
-    ClasificacionesConceptos --> Proveedores : ProveedorFKID
-    ClasificacionesConceptos --> ConceptosRetencion : ConceptoFKID
-    ClasificacionesConceptos --> PlandeCuentas : CuentaFKID
-    ImpuestosICAxClientes --> ImpuestosICA : ICAFKID
-    ImpuestosICAxClientes --> Clientes : ClienteFKID
-    ResponsabilidadesFiscalesClientes --> ResponsabilidadesFiscales : ResposabilidadFiscalFKID
-    ResponsabilidadesFiscalesProveedores --> ResponsabilidadesFiscales : ResposabilidadFiscalFKID
+    PlandeCuentas --> Clientes : ClienteFK
+    ClasificacionesConceptos --> Clientes : ClienteFK
+    ClasificacionesConceptos --> Proveedores : ProveedorFK
+    ClasificacionesConceptos --> ConceptosRetencion : ConceptoFK
+    ClasificacionesConceptos --> PlandeCuentas : CuentaFK
+    ImpuestosICAxClientes --> ImpuestosICA : ICAFK
+    ImpuestosICAxClientes --> Clientes : ClienteFK
+    ResponsabilidadesFiscalesClientes --> ResponsabilidadesFiscales : ResposabilidadFiscalFK
+    ResponsabilidadesFiscalesProveedores --> ResponsabilidadesFiscales : ResposabilidadFiscalFK
+    Clientes --> ActividadesEconomicas : ActividadEconomicaFK
+    TiposDocumentos --> TiposOrganizaciones : TipoOrganizacionFK
+    Departamentos --> Paises : PaisFK
+    Municipios --> Departamentos : DepartamentoFK
+    CodigosPostales --> Municipios : MunicipioFK
+    DetallesClasificacionesConceptos --> ClasificacionesConceptos : ClasificacionFK
+    DetallesClasificacionesConceptos --> PlandeCuentas : CuentaFK
+    Clientes --> Variables : MovimientoSistemaFK
+    MotivosRechazoFacturas --> FacturasRecibidasDian : MotivoRechazoFK
 ```
 
-### 4. Módulo CRM
+### 4. Mi empresa
 
-Este diagrama agrupa todas las entidades relacionadas con la Gestión de Relaciones con Clientes (CRM).
+Define cómo los clientes se relacionan con las tablas que se utilizan para la causación.
 
 ``` mermaid
     classDiagram
-    class OportunidadesCrm {
-        varchar(100) Nombre
-        uniqueidentifier EmpresaFK
-        uniqueidentifier EtapasFk
-        uniqueidentifier UsuarioFk
-        uniqueidentifier Id
-    }
-    class EmpresasCrm {
-        varchar(100) Nombre
-        varchar(100) Identificacion
-        uniqueidentifier SectorFK
-        uniqueidentifier Id
-    }
-    class ContactosEmpresasCrm {
-        varchar(100) Nombre
-        varchar(100) Correo
-        uniqueidentifier EmpresaCrmFk
-        uniqueidentifier Id
-    }
-    class GestionesCrm {
-        varchar(100) Nombre
-        datetime2 FechaGestion
-        uniqueidentifier OportunidadCrmFK
-        uniqueidentifier Id
-    }
-    class EtapasCrm {
-        varchar(100) Nombre
-        int Orden
-        uniqueidentifier Id
-    }
-    class SectoresCrm {
-        varchar(100) Nombre
-        uniqueidentifier Id
-    }
+    %% Módulo 4: Mi empresa (sólo nombres y campos FK)
+    class Clientes { uniqueidentifier Id }
+    class ResponsabilidadesFiscalesClientes { uniqueidentifier Id\nuniqueidentifier ClienteFK\nuniqueidentifier ResposabilidadFiscalFK }
+    class PlandeCuentas { uniqueidentifier Id\nuniqueidentifier ClienteFK }
+    class CentrosCostos { uniqueidentifier Id\nuniqueidentifier ClienteFK }
+    class ClasificacionesCentrosCostos { uniqueidentifier Id\nuniqueidentifier ClienteFK }
+    class ConceptosRetencionxClientes { uniqueidentifier Id\nuniqueidentifier ClienteFK\nuniqueidentifier ConceptoFK\nuniqueidentifier CuentaFK }
+    class DetallesImpuestos { uniqueidentifier Id\nuniqueidentifier ClienteFK\nuniqueidentifier ImpuestoFK\nuniqueidentifier CuentaFK }
+    class ImpuestosICAxClientes { uniqueidentifier Id\nuniqueidentifier ICAFK\nuniqueidentifier ClienteFK\nuniqueidentifier CuentaFK }
+    class CierresMeses { uniqueidentifier Id\nuniqueidentifier ClienteFK }
 
-    OportunidadesCrm --> EmpresasCrm : EmpresaFKID
-    OportunidadesCrm --> EtapasCrm : EtapasFkID
-    OportunidadesCrm --> Usuarios : UsuarioFkID
-    OportunidadesCrm --> ContactosEmpresasCrm : ContactoEmpresaCrmFkID
-    ContactosEmpresasCrm --> EmpresasCrm : EmpresaCrmFkID
-    GestionesCrm --> OportunidadesCrm : OportunidadCrmFKID
-    EmpresasCrm --> SectoresCrm : SectorFKID
+    ResponsabilidadesFiscalesClientes --> Clientes : ClienteFK
+    PlandeCuentas --> Clientes : ClienteFK
+    CentrosCostos --> Clientes : ClienteFK
+    ClasificacionesCentrosCostos --> Clientes : ClienteFK
+    ConceptosRetencionxClientes --> Clientes : ClienteFK
+    DetallesImpuestos --> Clientes : ClienteFK
+    ImpuestosICAxClientes --> Clientes : ClienteFK
+    CierresMeses --> Clientes : ClienteFK
 ```
 
-### 5. Módulo de Datos Maestros y Geográficos
-
-Contiene las tablas de soporte con información que no cambia frecuentemente, como la estructura geográfica.
-
-``` mermaid
-    classDiagram
-    class Paises {
-        varchar(100) Nombre
-        varchar(100) Codigo
-        uniqueidentifier Id
-    }
-    class Departamentos {
-        varchar(500) Nombre
-        varchar(10) Codigo
-        uniqueidentifier PaisFK
-        uniqueidentifier Id
-    }
-    class Municipios {
-        varchar(500) Nombre
-        varchar(10) Codigo
-        uniqueidentifier DepartamentoFK
-        uniqueidentifier Id
-    }
-    class CodigosPostales {
-        varchar(100) PostalCodigo
-        uniqueidentifier MunicipioFK
-        uniqueidentifier Id
-    }
-    
-    Departamentos --> Paises : PaisFKID
-    Municipios --> Departamentos : DepartamentoFKID
-    CodigosPostales --> Municipios : MunicipioFKID
-```
-
-### 6. Módulo de Seguridad y Acceso
+### 5. Módulo de Seguridad y Acceso
 
 Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para gestionar permisos.
 
 ``` mermaid
     classDiagram
-    class Usuarios {
-        varchar(200) Nombre
-        varchar(300) Correo
-        uniqueidentifier Id
-    }
-    class Roles {
-        nvarchar(200) Nombre
-        uniqueidentifier ModuloFK
-        uniqueidentifier Id
-    }
-    class Modulos {
-        varchar(100) Nombre
-        varchar(100) IdMenu
-        uniqueidentifier Id
-    }
-    class RolesxUsuarios {
-        uniqueidentifier UsuarioId
-        uniqueidentifier RoleId
-        uniqueidentifier Id
-    }
-    class AplicacionesxUsuarios {
-        uniqueidentifier UsuarioFK
-        uniqueidentifier ModuloFK
-        uniqueidentifier Id
-    }
+    %% Módulo 5: Seguridad y acceso (sólo nombres y campos FK)
+    class Usuarios { uniqueidentifier Id }
+    class Roles { uniqueidentifier Id\nuniqueidentifier ModuloFK }
+    class Modulos { uniqueidentifier Id }
+    class RolesxUsuarios { uniqueidentifier Id\nuniqueidentifier UsuarioId\nuniqueidentifier RoleId }
+    class AplicacionesxUsuarios { uniqueidentifier Id\nuniqueidentifier UsuarioFK\nuniqueidentifier ModuloFK }
+    class UsuariosxClientes { uniqueidentifier Id\nuniqueidentifier ClienteFK\nuniqueidentifier UsuarioFK }
 
-    RolesxUsuarios --> Usuarios : UsuarioIdID
-    RolesxUsuarios --> Roles : RoleIdID
-    Roles --> Modulos : ModuloFKID
-    AplicacionesxUsuarios --> Usuarios : UsuarioFKID
-    AplicacionesxUsuarios --> Modulos : ModuloFKID
+    RolesxUsuarios --> Usuarios : UsuarioId
+    RolesxUsuarios --> Roles : RoleId
+    Roles --> Modulos : ModuloFK
+    AplicacionesxUsuarios --> Usuarios : UsuarioFK
+    AplicacionesxUsuarios --> Modulos : ModuloFK
+    UsuariosxClientes --> Clientes : ClienteFK
+    UsuariosxClientes --> Usuarios : UsuarioFK
 ```
 
-<!-- El siguiente bloque contiene la definición de todas las tablas para que Mermaid pueda renderizar los diagramas. Se puede mantener colapsado. -->
+<!-- El siguiente bloque contiene la definición de todas las tablas para que Mermaid pueda renderizar los diagramas. -->
 
 <details>
 <summary>Definición de Clases (Tablas)</summary>
@@ -499,18 +372,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         bit Autoretenedor
         uniqueidentifier Id
     }
-    class CodenullNotifications {
-        nvarchar(1000) Title
-        nvarchar(1000) Message
-        nvarchar(max) Action
-        nvarchar(2000) UserTo
-        datetimeoffset CreatedDate
-        datetimeoffset ReadDate
-        bit Read
-        nvarchar(200) Type
-        nvarchar(200) MessageType
-        char(36) Id
-    }
     class CodigosPostales {
         uniqueidentifier MunicipioFK
         varchar(100) Tipo
@@ -548,18 +409,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         datetime2 FechaModificacion
         uniqueidentifier CuentaNoDeclaranteFK
         uniqueidentifier CuentaReteIvaFK
-        uniqueidentifier Id
-    }
-    class ContactosEmpresasCrm {
-        varchar(100) Nombre
-        varchar(100) Cargo
-        varchar(100) Correo
-        varchar(100) Celular
-        uniqueidentifier EmpresaCrmFk
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
         uniqueidentifier Id
     }
     class CufesXML {
@@ -648,32 +497,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         decimal(10,2) RangoMinimo
         uniqueidentifier Id
     }
-    class EmpresasCrm {
-        varchar(100) Nombre
-        varchar(100) TipoIdentificacion
-        varchar(100) Identificacion
-        varchar(100) NombreContacto
-        varchar(100) CargoContacto
-        varchar(100) CorreoContacto
-        varchar(100) CelularContacto
-        varchar(500) Descripcion
-        uniqueidentifier SectorFK
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        uniqueidentifier Id
-    }
-    class EtapasCrm {
-        varchar(100) Nombre
-        varchar(500) Descripcion
-        int Orden
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        uniqueidentifier Id
-    }
     class FacturasRecibidasDian {
         varchar(300) Cufe
         varchar(1000) NombreEmisor
@@ -726,38 +549,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         varchar(100) FormaPago
         bit MayorGasto
         bit NoDeducible
-        uniqueidentifier Id
-    }
-    class FallidosCrm {
-        varchar(100) Nombre
-        varchar(100) TipoFallo
-        varchar(500) Descripcion
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        uniqueidentifier Id
-    }
-    class GestionesCrm {
-        varchar(100) Nombre
-        uniqueidentifier TipoGestionFk
-        datetime2 FechaGestion
-        datetime2 ProximaGestion
-        uniqueidentifier CausaFK
-        varchar(100) Recordatorio
-        varchar(500) DescripcionGestion
-        varchar(100) NombreProximaGestion
-        uniqueidentifier OrigenFK
-        uniqueidentifier OportunidadCrmFK
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        varchar(500) Descripcion
-        uniqueidentifier Id
-    }
-    class ImportsAuxiliar {
-        varchar(max) Json
         uniqueidentifier Id
     }
     class Impuestos {
@@ -884,48 +675,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         uniqueidentifier DepartamentoFK
         uniqueidentifier Id
     }
-    class OportunidadesCrm {
-        varchar(100) Nombre
-        uniqueidentifier ContactoEmpresaCrmFk
-        uniqueidentifier ProductosCrmFk
-        uniqueidentifier OrigenCrmFk
-        uniqueidentifier UsuarioFk
-        uniqueidentifier EtapasFk
-        uniqueidentifier CausasFk
-        uniqueidentifier TipoOportunidadFK
-        varchar(100) Prioridad
-        bit CambiarEtapa
-        varchar(500) Descripcion
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        uniqueidentifier EmpresaFK
-        uniqueidentifier Id
-    }
-    class OrigenesContactosCrm {
-        varchar(100) Nombre
-        varchar(100) Cargo
-        varchar(250) Correo
-        varchar(100) Celular
-        uniqueidentifier OrigenFK
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        varchar(500) Descripcion
-        uniqueidentifier Id
-    }
-    class OrigenesCrm {
-        varchar(100) Nombre
-        varchar(500) Descripcion
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        bit Parner
-        uniqueidentifier Id
-    }
     class Paises {
         varchar(100) Nombre
         varchar(100) Codigo
@@ -947,15 +696,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         uniqueidentifier ClienteFK
         varchar(100) CuentaOperador
         bit CuentaAuxiliar
-        uniqueidentifier Id
-    }
-    class ProductosCrm {
-        varchar(100) Nombre
-        varchar(500) Descripcion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        datetime2 FechaCreacion
         uniqueidentifier Id
     }
     class Proveedores {
@@ -1070,15 +810,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         uniqueidentifier RoleId
         uniqueidentifier Id
     }
-    class SectoresCrm {
-        varchar(100) Nombre
-        varchar(500) Descripcion
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        uniqueidentifier Id
-    }
     class Terceros {
         uniqueidentifier ClienteFK
         varchar(500) Nombre
@@ -1092,20 +823,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         datetime2 FechaModificacion
         uniqueidentifier Id
     }
-    class Tickets {
-        varchar(250) Aplicacion
-        varchar(250) Email
-        varchar(250) Asunto
-        varchar(max) Cuerpo
-        varchar(100) Estado
-        varchar(100) Prioridad
-        datetime2 FechaCreacion
-        datetime2 FechaFin
-        varchar(100) Clasificacion
-        varchar(250) UsuarioAsignado
-        int Numero
-        uniqueidentifier Id
-    }
     class TiposDocumentos {
         varchar(200) Nombre
         varchar(max) Descripcion
@@ -1115,24 +832,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         datetime2 FechaModificacion
         varchar(100) Codigo
         uniqueidentifier TipoOrganizacionFK
-        uniqueidentifier Id
-    }
-    class TiposGestionCrm {
-        varchar(100) Nombre
-        varchar(500) Descripcion
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
-        uniqueidentifier Id
-    }
-    class TiposOportunidadesCrm {
-        varchar(100) Nombre
-        varchar(500) Descripcion
-        datetime2 FechaCreacion
-        datetime2 FechaModificacion
-        uniqueidentifier UsuarioCreacionFK
-        uniqueidentifier UsuarioModificacionFK
         uniqueidentifier Id
     }
     class TiposOrganizaciones {
@@ -1162,23 +861,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
         varchar(max) Foto
         uniqueidentifier ClienteFK
         varchar(100) CierreMes
-        uniqueidentifier Id
-    }
-    class UsuariosClientes {
-        uniqueidentifier ClienteFK
-        uniqueidentifier UsuarioModuloFK
-        uniqueidentifier UsuarioContablerFK
-        uniqueidentifier UsuarioUboraFK
-        uniqueidentifier Id
-    }
-    class UsuariosContabler {
-        uniqueidentifier ClienteFK
-        uniqueidentifier Id
-    }
-    class UsuariosModulos {
-        uniqueidentifier Id
-    }
-    class UsuariosUbora {
         uniqueidentifier Id
     }
     class UsuariosxClientes {
@@ -1246,7 +928,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
     ConceptosRetencionxClientes --> PlandeCuentas : CuentaFKID
     ConceptosRetencionxClientes --> PlandeCuentas : CuentaNoDeclaranteFKID
     ConceptosRetencionxClientes --> PlandeCuentas : CuentaReteIvaFKID
-    ContactosEmpresasCrm --> EmpresasCrm : EmpresaCrmFkID
     Departamentos --> Paises : PaisFKID
     DetallesClasificacionesCentrosCostos --> CentrosCostos : CentroCostosFKID
     DetallesClasificacionesCentrosCostos --> ClasificacionesCentrosCostos : ClasificacionCCFKID
@@ -1262,7 +943,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
     DetallesProveedores --> Clientes : ClienteFKID
     DetallesProveedores --> Proveedores : ProveedorFKID
     DetallesProveedores --> Usuarios : UsuarioFKID
-    EmpresasCrm --> SectoresCrm : SectorFKID
     FacturasRecibidasDian --> Clientes : ClienteFKID
     FacturasRecibidasDian --> CufesXML : CufeXMLFKID
     FacturasRecibidasDian --> MotivosRechazoFacturas : MotivoRechazoFKID
@@ -1271,10 +951,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
     FacturasRecibidasDian --> Usuarios : UsuarioAsignadoFKID
     FacturasRecibidasDian --> Usuarios : UsuarioRechazoFKID
     FacturasRecibidasDian --> Usuarios : UsuarioAprobacionFKID
-    GestionesCrm --> FallidosCrm : CausaFKID
-    GestionesCrm --> OportunidadesCrm : OportunidadCrmFKID
-    GestionesCrm --> OrigenesCrm : OrigenFKID
-    GestionesCrm --> TiposGestionCrm : TipoGestionFkID
     ImpuestosICA --> Municipios : MunicipioFKID
     ImpuestosICAxClientes --> Clientes : ClienteFKID
     ImpuestosICAxClientes --> ImpuestosICA : ICAFKID
@@ -1287,15 +963,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
     ItemsCufeXML --> CufesXML : CufeXMLFKID
     ItemsCufeXML --> PlandeCuentas : CuentaKID
     Municipios --> Departamentos : DepartamentoFKID
-    OportunidadesCrm --> ContactosEmpresasCrm : ContactoEmpresaCrmFkID
-    OportunidadesCrm --> EmpresasCrm : EmpresaFKID
-    OportunidadesCrm --> EtapasCrm : EtapasFkID
-    OportunidadesCrm --> FallidosCrm : CausasFkID
-    OportunidadesCrm --> OrigenesCrm : OrigenCrmFkID
-    OportunidadesCrm --> ProductosCrm : ProductosCrmFkID
-    OportunidadesCrm --> TiposOportunidadesCrm : TipoOportunidadFKID
-    OportunidadesCrm --> Usuarios : UsuarioFkID
-    OrigenesContactosCrm --> OrigenesCrm : OrigenFKID
     PlandeCuentas --> Clientes : ClienteFKID
     Proveedores --> ActividadesEconomicas : ActividadEconomicaFKID
     Proveedores --> ClasificacionesCentrosCostos : ClasificacionCCFKID
@@ -1326,10 +993,6 @@ Define cómo los usuarios se relacionan con roles, módulos y aplicaciones para 
     TrazabilidadesCausaciones --> Causaciones : CausacionFKID
     TrazabilidadesCausaciones --> Usuarios : UsuarioFKID
     Usuarios --> Clientes : ClienteFKID
-    UsuariosClientes --> AplicacionesxUsuarios : UsuarioModuloFKID
-    UsuariosClientes --> UsuariosContabler : UsuarioContablerFKID
-    UsuariosClientes --> UsuariosUbora : UsuarioUboraFKID
-    UsuariosContabler --> Clientes : ClienteFKID
     UsuariosxClientes --> Clientes : ClienteFKID
     UsuariosxClientes --> Usuarios : UsuarioFKID
 ```

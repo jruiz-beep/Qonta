@@ -1,6 +1,4 @@
-# Bienvenid@ a la Documentación Técnica de Qonta
-
-Este sitio es una fuente centralizada de información para desarrolladores, personal de soporte y cualquier persona interesada en comprender los aspectos técnicos del sistema Qonta.
+# Documentación Técnica de Qonta
 
 ## ¿Qué es Qonta?
 
