@@ -4,12 +4,26 @@ Este documento describe la arquitectura técnica del sistema Qonta, incluyendo s
 
 ## 3.1 Vista General de la Arquitectura
 
-Qonta se concibe como un ecosistema de microservicios o módulos lógicos interconectados, construidos sobre una base de datos centralizada. La arquitectura está diseñada para ser escalable, extensible y fácil de mantener, permitiendo la adición de nuevas funcionalidades y la integración con sistemas externos.
+MQL-PLUS se concibe como un ecosistema de microservicios o módulos lógicos interconectados, construidos sobre una base de datos centralizada. La arquitectura está diseñada para ser escalable, extensible y fácil de mantener, permitiendo la adición de nuevas funcionalidades y la integración con sistemas externos.
 
 ```mermaid
 C4Context
-    title Sistema Qonta - Diagrama de Contexto
+    title Sistema MQL-PLUS - Diagrama de Contexto
 
+    %% -- ESTILOS: TEMA MORADO --
+    %% Personas: Morado oscuro y sólido
+    UpdateElementStyle(person, $fontColor="#ffffff", $bgColor="#4a148c", $borderColor="#38006b")
+    
+    %% Sistema Principal (Qonta): Morado vibrante
+    UpdateElementStyle(system, $fontColor="#ffffff", $bgColor="#7b1fa2", $borderColor="#4a148c")
+    
+    %% Sistemas Externos: Lila muy claro (efecto "aclarado")
+    UpdateElementStyle(external_system, $fontColor="#4a148c", $bgColor="#f3e5f5", $borderColor="#ab47bc")
+    
+    %% Relaciones: Líneas moradas
+    UpdateRelStyle($lineColor="#7b1fa2", $textColor="#7b1fa2")
+
+    %% -- NODOS --
     Person(usuario_cliente, "Usuario Cliente", "Empresario, contador o auxiliar que gestiona facturas.")
     Person(admin_qonta, "Administrador Qonta", "Personal técnico o de soporte de Qonta.")
     Person(integrador_externo, "Integrador Externo", "Sistemas externos que consumen la API de Qonta.")
@@ -21,6 +35,7 @@ C4Context
     System_Ext(erp_contable, "ERP Contable Cliente", "Sistema ERP del cliente (e.g., Siigo, Siesa) para la importación de causaciones.")
     System_Ext(smtp_server, "Servidor SMTP", "Servicio de envío de correos electrónicos.")
 
+    %% -- RELACIONES --
     Rel(usuario_cliente, qonta_sistema, "Interactúa a través de la interfaz web")
     Rel(admin_qonta, qonta_sistema, "Administra y monitorea")
     Rel(integrador_externo, qonta_sistema, "Consume API GraphQL", "HTTPS")
@@ -95,6 +110,19 @@ La arquitectura de cada aplicación sigue un patrón de capas bien definido:
 C4Container
     title Contenedores del Sistema Qonta
 
+    %% -- ESTILOS: TEMA MORADO --
+    UpdateElementStyle(person, $fontColor="#ffffff", $bgColor="#4a148c", $borderColor="#38006b")
+    UpdateElementStyle(external_system, $fontColor="#4a148c", $bgColor="#f3e5f5", $borderColor="#ab47bc")
+    
+    %% Contenedores: Morado vibrante (Igual que el sistema principal arriba)
+    UpdateElementStyle(container, $fontColor="#ffffff", $bgColor="#7b1fa2", $borderColor="#4a148c")
+    
+    %% Base de Datos: Un tono intermedio oscuro para diferenciar
+    UpdateElementStyle(db, $fontColor="#ffffff", $bgColor="#4527a0", $borderColor="#311b92")
+    
+    UpdateRelStyle($lineColor="#7b1fa2", $textColor="#7b1fa2")
+
+    %% -- NODOS --
     System_Ext(dian, "DIAN (Servicio Web)", "Dirección de Impuestos y Aduanas Nacionales de Colombia.")
     System_Ext(kiai_pt, "Kiai (Proveedor Tecnológico)", "Proveedor Tecnológico autorizado por la DIAN.")
     System_Ext(erp_contable, "ERP Contable Cliente", "Sistema ERP del cliente (ej. Siigo).")
@@ -108,8 +136,9 @@ C4Container
     Container(api_gateway, "API Gateway / GraphQL Server", "Servidor de aplicación principal que expone la API GraphQL para todos los módulos.", "Node.js, Express, Apollo Server")
     Container(microservicio_bot_dian, "Microservicio Bot DIAN", "Servicio dedicado a la automatización de la descarga de facturas desde la DIAN.", "Python/Node.js, Puppeteer/Selenium")
     Container(microservicio_xml_extract, "Microservicio XML Extract", "Servicio local que parsea XMLs de DIAN e inserta en DB.", "Node.js, Prisma")
-    Container(db, "Base de Datos", "Base de datos relacional persistente.", "SQL Server")
+    ContainerDb(db, "Base de Datos", "Base de datos relacional persistente.", "SQL Server")
 
+    %% -- RELACIONES --
     Rel(usuario_web, spa_qonta, "Usa", "HTTPS")
     Rel(usuario_web, spa_crm, "Usa", "HTTPS")
     Rel(spa_qonta, api_gateway, "Realiza consultas y mutaciones", "GraphQL/HTTPS")

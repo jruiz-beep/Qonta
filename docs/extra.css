@@ -60,3 +60,90 @@
 .mermaid svg:active {
   cursor: grabbing;
 }
+
+/* --- OVERRIDES PARA DIAGRAMAS C4 (C4Context / C4Container) --- */
+/* Aplica colores a nodos específicos generados con IDs basados en los identificadores Mermaid */
+.mermaid svg g[id*="usuario_cliente"] rect,
+.mermaid svg g[id*="usuario_cliente"] ellipse,
+.mermaid svg g[id*="usuario_cliente"] polygon {
+  fill: #4DC9E5 !important;
+  stroke: #3D337F !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid svg g[id*="admin_qonta"] rect,
+.mermaid svg g[id*="admin_qonta"] ellipse,
+.mermaid svg g[id*="admin_qonta"] polygon {
+  fill: #4DC9E5 !important;
+  stroke: #3D337F !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid svg g[id*="integrador_externo"] rect,
+.mermaid svg g[id*="integrador_externo"] ellipse,
+.mermaid svg g[id*="integrador_externo"] polygon {
+  fill: #4DC9E5 !important;
+  stroke: #3D337F !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid svg g[id*="qonta_sistema"] rect,
+.mermaid svg g[id*="qonta_sistema"] ellipse,
+.mermaid svg g[id*="qonta_sistema"] polygon {
+  fill: #3D337F !important;
+  stroke: #4DC9E5 !important;
+  stroke-width: 2px !important;
+  color: #F5F5F5 !important;
+}
+
+/* Sistemas externos con fondo translúcido */
+.mermaid svg g[id*="dian"] rect,
+.mermaid svg g[id*="kiai_pt"] rect,
+.mermaid svg g[id*="erp_contable"] rect,
+.mermaid svg g[id*="smtp_server"] rect {
+  fill: rgba(255,255,255,0.06) !important;
+  stroke: #3D337F !important;
+  stroke-width: 2px !important;
+}
+
+/* Asegurar color del texto dentro de los nodos */
+.mermaid svg g[class*="node"] text {
+  fill: var(--md-default-fg-color) !important;
+}
+
+/* Reglas adicionales más generales para capturar varias convenciones de C4/Mermaid */
+.mermaid svg g[class*="person"] rect,
+.mermaid svg g[class*="person"] ellipse,
+.mermaid svg g[class*="actor"] rect,
+.mermaid svg g[class*="actor"] ellipse,
+.mermaid svg g[class*="persona"] rect,
+.mermaid svg g[class*="persona"] ellipse,
+.mermaid svg g[class*="user"] rect,
+.mermaid svg g[class*="user"] ellipse {
+  fill: #4DC9E5 !important;
+  stroke: #3D337F !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid svg g[class*="system"] rect,
+.mermaid svg g[class*="system"] ellipse,
+.mermaid svg g[class*="sistema"] rect,
+.mermaid svg g[class*="sistema"] ellipse {
+  fill: #3D337F !important;
+  stroke: #4DC9E5 !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid svg g[class*="external_system"] rect,
+.mermaid svg g[class*="external-system"] rect,
+.mermaid svg g[class*="externalSystem"] rect,
+.mermaid svg g[class*="external"] rect,
+.mermaid svg g[class*="external"] ellipse {
+  fill: rgba(255,255,255,0.06) !important;
+  stroke: #3D337F !important;
+  stroke-width: 2px !important;
+}
+
+/* Fallback: si Mermaid no añade clases, intentar aplicar por posición semántica
+   (último recurso - podría afectar otros diagramas) */
+.mermaid svg g:nth-of-type(1) rect { }
