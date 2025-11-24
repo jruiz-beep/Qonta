@@ -183,6 +183,7 @@ Estas tablas forman el corazón del sistema Qonta, gestionando la información d
 ### `CufesXML`
 * **Propósito:** Guarda los metadatos y el CUFE de los documentos electrónicos recibidos/enviados.
 * **Campos:**
+	- `Valorpropina` decimal(19,3)
 	- `NumeroFactura` varchar(100)
 	- `Emisor` varchar(100)
 	- `TipoFactura` varchar(100)
